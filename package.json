@@ -2,7 +2,7 @@
   "name": "vue-form",
   "version": "0.1.0",
   "description": "A form generation for Vue.js",
-  "main": "src/index.js",
+  "main": "dist/vue-form.js",
   "scripts": {
     "build": "webpack --config build/webpack.build.config.js"
   },
