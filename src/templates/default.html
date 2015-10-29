@@ -1,4 +1,4 @@
-<div v-repeat="field in fields">
+<div v-for="field in fields">
     <label v-if="field.type != 'checkbox'">{{ field.label }}</label>
-    <field config="{{ field }}" values="{{@ values }}"></field>
+    <field :config="field" :values.sync="values"></field>
 </div>

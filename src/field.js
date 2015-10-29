@@ -4,7 +4,7 @@ module.exports = function (_) {
 
         props: ['config', 'values'],
 
-        template: '<partial name="{{ type }}"></partial>',
+        template: '<partial :name="type"></partial>',
 
         data: function () {
             return _.extend({

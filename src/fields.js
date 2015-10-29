@@ -111,11 +111,12 @@ module.exports = function (_) {
         },
 
         types: {
-            text: '<input type="text" v-attr="attrs" v-model="value">',
-            textarea: '<textarea v-attr="attrs" v-model="value"></textarea>',
-            radio: '<input type="radio" v-attr="attrs" v-model="value">',
-            checkbox: '<input type="checkbox" v-attr="attrs" v-model="value">',
-            select: '<select v-attr="attrs" v-model="value" options="options | options"></select>'
+            text: '<input type="text" v-bind="attrs" v-model="value">',
+            textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
+            radio: '<input type="radio" v-bind="attrs" v-model="value">',
+            checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
+            // TODO does not support optgroups yet
+            select: '<select v-bind="attrs" v-model="value"><option v-for="option in options | options" :value="option.value">{{ option.text }}</option></select>'
         }
 
     };
