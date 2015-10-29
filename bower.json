@@ -1,0 +1,14 @@
+{
+  "name": "vue-form",
+  "main": "dist/vue-form.js",
+  "description": "A form generator for Vue.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/pagekit/vue-form",
+  "license": "MIT",
+  "ignore": [
+    ".*",
+    "build",
+    "*.json",
+    "*.md"
+  ]
+}
