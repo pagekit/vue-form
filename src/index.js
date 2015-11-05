@@ -9,7 +9,7 @@ module.exports = function (Vue) {
     var validator = require('./validator')(_);
 
     Vue.field = field;
-    Vue.component('fields', field);
+    Vue.mixin(field.mixin);
 
     Vue.validator = validator;
     Vue.filter('valid', validator.filter);

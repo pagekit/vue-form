@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var validator = __webpack_require__(5)(_);
 
 	    Vue.field = field;
-	    Vue.component('fields', field);
+	    Vue.mixin(field.mixin);
 
 	    Vue.validator = validator;
 	    Vue.filter('valid', validator.filter);
@@ -151,137 +151,139 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = function (_) {
 
-	    return {
+	    function Fields(options) {
 
-	        props: {
+	        return {
 
-	            config: {
-	                default: ''
+	            props: {
+
+	                config: {
+	                    default: ''
+	                },
+
+	                model: {
+	                    default: ''
+	                },
+
+	                template: {
+	                    type: String,
+	                    default: 'default'
+	                }
+
 	            },
 
-	            model: {
-	                default: ''
+	            created: function () {
+
+	                if (!this.fields || !this.values) {
+	                    _.warn('Invalid config or model provided');
+	                    this.$options.template = '';
+	                    return;
+	                }
+
+	                if (!this.$options.template) {
+	                    this.$options.template = Fields.templates[this.template];
+	                }
+
 	            },
 
-	            template: {
-	                type: String,
-	                default: 'default'
+	            computed: {
+
+	                fields: function () {
+
+	                    var vm = this;
+
+	                    if (_.isObject(this.config)) {
+	                        return this.filterFields(this.config);
+	                    }
+
+	                    do {
+
+	                        if (_.isObject(vm.$options[this.config])) {
+	                            return this.filterFields(vm.$options[this.config]);
+	                        }
+
+	                        vm = vm.$parent;
+
+	                    } while (vm);
+
+	                },
+
+	                values: function () {
+
+	                    var vm = this;
+
+	                    if (_.isObject(this.model)) {
+	                        return this.model;
+	                    }
+
+	                    do {
+
+	                        if (_.isObject(vm.$get(this.model))) {
+	                            return vm.$get(this.model);
+	                        }
+
+	                        vm = vm.$parent;
+
+	                    } while (vm);
+
+	                }
+
+	            },
+
+	            methods: {
+
+	                filterFields: function (fields) {
+
+	                    var arr = _.isArray(fields), flds = [];
+
+	                    _.each(fields, function (field, name) {
+
+	                        if (!_.isString(field.name) && !arr) {
+	                            field.name = name;
+	                        }
+
+	                        if (_.isString(field.name)) {
+	                            flds.push(field);
+	                        } else {
+	                            _.warn('Field name missing ' + JSON.stringify(field));
+	                        }
+
+	                    });
+
+	                    return flds;
+	                }
+
+	            },
+
+	            components: {
+	                field: __webpack_require__(3)(_, _.extend(options.fields || {}, Fields.types))
 	            }
 
-	        },
+	        };
+
+	    }
+
+	    Fields.mixin = {
 
 	        created: function () {
-
-	            var opts = this.$options, partials = {}, components = {};
-
-	            if (!this.fields || !this.values) {
-	                _.warn('Invalid config or model provided');
-	                opts.template = '';
-	                return;
-	            }
-
-	            if (!opts.template) {
-	                opts.template = opts.templates[this.template];
-	            }
-
-	            _.each(opts.types, function (type, name) {
-	                if (_.isString(type)) {
-	                    partials[name] = type;
-	                } else if (_.isObject(type)) {
-	                    partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
-	                    components[name] = function (resolve) {
-	                        resolve(type);
-	                    };
-	                }
-	            });
-
-	            opts.components.field = _.Vue.extend(__webpack_require__(3)(_, partials, components));
-	        },
-
-	        computed: {
-
-	            fields: function () {
-
-	                var vm = this;
-
-	                if (_.isObject(this.config)) {
-	                    return this.filterFields(this.config);
-	                }
-
-	                do {
-
-	                    if (_.isObject(vm.$options[this.config])) {
-	                        return this.filterFields(vm.$options[this.config]);
-	                    }
-
-	                    vm = vm.$parent;
-
-	                } while (vm);
-
-	            },
-
-	            values: function () {
-
-	                var vm = this;
-
-	                if (_.isObject(this.model)) {
-	                    return this.model;
-	                }
-
-	                do {
-
-	                    if (_.isObject(vm.$get(this.model))) {
-	                        return vm.$get(this.model);
-	                    }
-
-	                    vm = vm.$parent;
-
-	                } while (vm);
-
-	            }
-
-	        },
-
-	        methods: {
-
-	            filterFields: function (fields) {
-
-	                var arr = _.isArray(fields), flds = [];
-
-	                _.each(fields, function (field, name) {
-
-	                    if (!_.isString(field.name) && !arr) {
-	                        field.name = name;
-	                    }
-
-	                    if (_.isString(field.name)) {
-	                        flds.push(field);
-	                    } else {
-	                        _.warn('Field name missing ' + JSON.stringify(field));
-	                    }
-
-	                });
-
-	                return flds;
-	            }
-
-	        },
-
-	        templates: {
-	            default: __webpack_require__(4)
-	        },
-
-	        types: {
-	            text: '<input type="text" v-bind="attrs" v-model="value">',
-	            textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-	            radio: '<input type="radio" v-bind="attrs" v-model="value">',
-	            checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-	            // TODO does not support optgroups yet
-	            select: '<select v-bind="attrs" v-model="value"><option v-for="option in options | options" :value="option.value">{{ option.text }}</option></select>'
+	            this.$options.components.fields = _.Vue.extend(Fields(this.$options));
 	        }
 
 	    };
 
+	    Fields.types = {
+	        text: '<input type="text" v-bind="attrs" v-model="value">',
+	        textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
+	        radio: '<input type="radio" v-bind="attrs" v-model="value">',
+	        checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
+	        select: '<select v-bind="attrs" v-model="value"><option v-for="option in options | options" :value="option.value">{{ option.text }}</option></select>' // TODO does not support optgroups yet
+	    };
+
+	    Fields.templates = {
+	        default: __webpack_require__(4)
+	    };
+
+	    return Fields;
 	};
 
 
@@ -289,9 +291,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = function (_, partials, components) {
+	module.exports = function (_, types) {
 
-	    return {
+	    var Field = {
 
 	        props: ['config', 'values'],
 
@@ -360,12 +362,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        },
 
-	        partials: partials,
+	        partials: {},
 
-	        components: components
+	        components: {}
 
 	    };
 
+	    _.each(types, function (type, name) {
+	        if (_.isString(type)) {
+	            Field.partials[name] = type;
+	        } else if (_.isObject(type)) {
+	            Field.partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
+	            Field.components[name] = function (resolve) {
+	                resolve(type);
+	            };
+	        }
+	    });
+
+	    return Field;
 	};
 
 

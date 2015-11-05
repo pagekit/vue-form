@@ -1,6 +1,6 @@
-module.exports = function (_, partials, components) {
+module.exports = function (_, types) {
 
-    return {
+    var Field = {
 
         props: ['config', 'values'],
 
@@ -69,10 +69,22 @@ module.exports = function (_, partials, components) {
 
         },
 
-        partials: partials,
+        partials: {},
 
-        components: components
+        components: {}
 
     };
 
+    _.each(types, function (type, name) {
+        if (_.isString(type)) {
+            Field.partials[name] = type;
+        } else if (_.isObject(type)) {
+            Field.partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
+            Field.components[name] = function (resolve) {
+                resolve(type);
+            };
+        }
+    });
+
+    return Field;
 };
