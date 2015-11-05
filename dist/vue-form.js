@@ -151,7 +151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = function (_) {
 
-	    return _.field = {
+	    return {
 
 	        props: {
 
@@ -170,18 +170,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        },
 
-	        created: function() {
+	        created: function () {
+
+	            var opts = this.$options, partials = {}, components = {};
 
 	            if (!this.fields || !this.values) {
 	                _.warn('Invalid config or model provided');
-	                this.$options.template = '';
+	                opts.template = '';
 	                return;
 	            }
 
-	            if (!this.$options.template) {
-	                this.$options.template = this.$options.templates[this.template];
+	            if (!opts.template) {
+	                opts.template = opts.templates[this.template];
 	            }
 
+	            _.each(opts.types, function (type, name) {
+	                if (_.isString(type)) {
+	                    partials[name] = type;
+	                } else if (_.isObject(type)) {
+	                    partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
+	                    components[name] = function (resolve) {
+	                        resolve(type);
+	                    };
+	                }
+	            });
+
+	            opts.components.field = _.Vue.extend(__webpack_require__(3)(_, partials, components));
 	        },
 
 	        computed: {
@@ -253,10 +267,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        },
 
-	        components: {
-	            field: __webpack_require__(3)(_)
-	        },
-
 	        templates: {
 	            default: __webpack_require__(4)
 	        },
@@ -279,7 +289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = function (_) {
+	module.exports = function (_, partials, components) {
 
 	    return {
 
@@ -300,7 +310,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        created: function () {
 	            this.$set('key', '["' + this.name.replace('.', '"]["') + '"]');
-	            this.$options.partials = _.field.types;
 	        },
 
 	        computed: {
@@ -349,7 +358,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return this.filterOptions(options);
 	            }
 
-	        }
+	        },
+
+	        partials: partials,
+
+	        components: components
 
 	    };
 

@@ -1,4 +1,4 @@
-module.exports = function (_) {
+module.exports = function (_, partials, components) {
 
     return {
 
@@ -19,7 +19,6 @@ module.exports = function (_) {
 
         created: function () {
             this.$set('key', '["' + this.name.replace('.', '"]["') + '"]');
-            this.$options.partials = _.field.types;
         },
 
         computed: {
@@ -68,7 +67,11 @@ module.exports = function (_) {
                 return this.filterOptions(options);
             }
 
-        }
+        },
+
+        partials: partials,
+
+        components: components
 
     };
 

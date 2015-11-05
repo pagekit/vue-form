@@ -1,6 +1,6 @@
 module.exports = function (_) {
 
-    return _.field = {
+    return {
 
         props: {
 
@@ -19,18 +19,32 @@ module.exports = function (_) {
 
         },
 
-        created: function() {
+        created: function () {
+
+            var opts = this.$options, partials = {}, components = {};
 
             if (!this.fields || !this.values) {
                 _.warn('Invalid config or model provided');
-                this.$options.template = '';
+                opts.template = '';
                 return;
             }
 
-            if (!this.$options.template) {
-                this.$options.template = this.$options.templates[this.template];
+            if (!opts.template) {
+                opts.template = opts.templates[this.template];
             }
 
+            _.each(opts.types, function (type, name) {
+                if (_.isString(type)) {
+                    partials[name] = type;
+                } else if (_.isObject(type)) {
+                    partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
+                    components[name] = function (resolve) {
+                        resolve(type);
+                    };
+                }
+            });
+
+            opts.components.field = _.Vue.extend(require('./field')(_, partials, components));
         },
 
         computed: {
@@ -100,10 +114,6 @@ module.exports = function (_) {
                 return flds;
             }
 
-        },
-
-        components: {
-            field: require('./field')(_)
         },
 
         templates: {
