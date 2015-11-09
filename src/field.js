@@ -13,7 +13,7 @@ module.exports = function (_, types) {
                 type: 'text',
                 label: '',
                 attrs: {},
-                options: [],
+                options: []
             }, this.config);
         },
 

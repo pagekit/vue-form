@@ -276,7 +276,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
 	        radio: '<input type="radio" v-bind="attrs" v-model="value">',
 	        checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-	        select: '<select v-bind="attrs" v-model="value"><option v-for="option in options | options" :value="option.value">{{ option.text }}</option></select>' // TODO does not support optgroups yet
+	        select: '<select v-bind="attrs" v-model="value">' +
+	                    '<template v-for="option in options | options">' +
+	                        '<optgroup :label="option.label" v-if="option.label">' +
+	                            '<option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>' +
+	                        '</optgroup>' +
+	                        '<option :value="option.value" v-else>{{ option.text }}</option>' +
+	                    '</template>' +
+	                '</select>'
 	    };
 
 	    Fields.templates = {
@@ -306,7 +313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                type: 'text',
 	                label: '',
 	                attrs: {},
-	                options: [],
+	                options: []
 	            }, this.config);
 	        },
 
