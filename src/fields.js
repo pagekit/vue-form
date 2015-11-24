@@ -1,8 +1,10 @@
-module.exports = function (_) {
+module.exports = function (_, Vue) {
 
     function Fields(options) {
 
         return {
+
+            name: 'fields',
 
             props: {
 
@@ -115,7 +117,7 @@ module.exports = function (_) {
     Fields.mixin = {
 
         created: function () {
-            this.$options.components.fields = _.Vue.extend(Fields(this.$options));
+            this.$options.components.fields = Vue.extend(Fields(this.$options));
         }
 
     };

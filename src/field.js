@@ -2,6 +2,8 @@ module.exports = function (_, types) {
 
     var Field = {
 
+        name: 'field',
+
         props: ['config', 'values'],
 
         template: '<partial :name="type"></partial>',

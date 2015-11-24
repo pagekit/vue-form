@@ -5,7 +5,7 @@
 module.exports = function (Vue) {
 
     var _ = require('./lib/util')(Vue);
-    var field = require('./fields')(_);
+    var field = require('./fields')(_, Vue);
     var validator = require('./validator')(_);
 
     Vue.field = field;

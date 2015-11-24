@@ -66,7 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function (Vue) {
 
 	    var _ = __webpack_require__(1)(Vue);
-	    var field = __webpack_require__(2)(_);
+	    var field = __webpack_require__(2)(_, Vue);
 	    var validator = __webpack_require__(5)(_);
 
 	    Vue.field = field;
@@ -149,11 +149,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function (_) {
+	module.exports = function (_, Vue) {
 
 	    function Fields(options) {
 
 	        return {
+
+	            name: 'fields',
 
 	            props: {
 
@@ -266,7 +268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Fields.mixin = {
 
 	        created: function () {
-	            this.$options.components.fields = _.Vue.extend(Fields(this.$options));
+	            this.$options.components.fields = Vue.extend(Fields(this.$options));
 	        }
 
 	    };
@@ -301,6 +303,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function (_, types) {
 
 	    var Field = {
+
+	        name: 'field',
 
 	        props: ['config', 'values'],
 
