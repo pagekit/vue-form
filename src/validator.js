@@ -12,22 +12,10 @@ module.exports = function (_) {
 
         add: function (dir) {
             this.dirs.push(dir);
-
-            var validator = this.instance(dir.el);
-
-            if (validator) {
-                validator.add(dir);
-            }
         },
 
         remove: function (dir) {
             _.pull(this.dirs, dir);
-
-            var validator = this.instance(dir.el);
-
-            if (validator) {
-                validator.remove(dir);
-            }
         },
 
         instance: function (el) {
@@ -123,8 +111,7 @@ module.exports = function (_) {
                 this.name = _.camelize(name);
                 this.el._validator = this;
 
-                this.vm.$set(this.name, {});
-
+                this.vm.$set(this.name);
                 this.vm.$on('hook:compiled', function () {
                     _.validator.validate(self.el);
                 });
@@ -132,14 +119,6 @@ module.exports = function (_) {
 
             unbind: function () {
                 this.vm.$delete(this.name);
-            },
-
-            add: function (dir) {
-                this.vm.$set(this.name + '.' + dir.name, {});
-            },
-
-            remove: function (dir) {
-                this.vm.$delete(this.name + '.' + dir.name);
             },
 
             results: function (results) {
