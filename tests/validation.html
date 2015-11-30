@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>vue-form tests</title>
+        <script type="text/javascript" src="../node_modules/vue/dist/vue.js"></script>
+        <script type="text/javascript" src="../dist/vue-form.js"></script>
+        <style type="text/css">
+            body {
+                font-family: Helvetica Neue, Arial, sans-serif;
+            }
+        </style>
+        <script type="text/javascript">
+        window.onload = function() {
+
+            new Vue({
+                el: 'body',
+                data: {
+                    password: '',
+                    form: {}
+                },
+                methods: {
+                    submit: function () {
+                        console.log('Form submited');
+                    }
+                }
+            });
+
+        }
+        </script>
+    </head>
+    <body>
+
+        <form v-validator="form" @submit.prevent="submit | valid">
+            <input type="text" name="password" v-model="password" v-validate:required>
+            <p class="uk-form-help-block uk-text-danger" v-show="form.password.invalid">Username cannot be blank</p>
+            <button type="submit">Submit</button>
+        </form>
+
+    </body>
+</html>
