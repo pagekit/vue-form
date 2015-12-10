@@ -123,18 +123,20 @@ module.exports = function (_, Vue) {
     };
 
     Fields.types = {
-        text: '<input type="text" v-bind="attrs" v-model="value">',
-        textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-        radio: '<input type="radio" v-bind="attrs" v-model="value">',
-        checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-        select: '<select v-bind="attrs" v-model="value">' +
-                    '<template v-for="option in options | options">' +
-                        '<optgroup :label="option.label" v-if="option.label">' +
-                            '<option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>' +
-                        '</optgroup>' +
-                        '<option :value="option.value" v-else>{{ option.text }}</option>' +
-                    '</template>' +
-                '</select>'
+        text:       '<input type="text" v-bind="attrs" v-model="value">',
+        textarea:   '<textarea v-bind="attrs" v-model="value"></textarea>',
+        radio:      '<template v-for="option in options | options">' +
+                        '<input type="radio" v-bind="attrs" :value="option.value" v-model="value"> <label>{{ option.text }}</label>' +
+                    '</template>',
+        checkbox:   '<input type="checkbox" v-bind="attrs" v-model="value">',
+        select:     '<select v-bind="attrs" v-model="value">' +
+                        '<template v-for="option in options | options">' +
+                            '<optgroup :label="option.label" v-if="option.label">' +
+                                '<option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>' +
+                            '</optgroup>' +
+                            '<option :value="option.value" v-else>{{ option.text }}</option>' +
+                        '</template>' +
+                    '</select>'
     };
 
     Fields.templates = {
