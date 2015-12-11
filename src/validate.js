@@ -6,10 +6,11 @@ module.exports = function (_) {
 
     return {
 
+        params: ['name'],
+
         bind: function () {
 
-            var name = _.attr(this.el, 'name');
-
+            var name = this.params.name;
             if (!name) {
                 return;
             }
