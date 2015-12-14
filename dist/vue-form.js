@@ -635,11 +635,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return {
 
-	        params: ['name'],
+	        priority: 500,
 
 	        bind: function () {
 
-	            var name = this.params.name;
+	            var name = _.attr(this.el, 'name');
+
 	            if (!name) {
 	                return;
 	            }
