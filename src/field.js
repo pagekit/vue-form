@@ -4,7 +4,7 @@ module.exports = function (_, types) {
 
         name: 'field',
 
-        props: ['config', 'values'],
+        props: ['config', 'values', 'class'],
 
         template: '<partial :name="type"></partial>',
 
@@ -21,6 +21,7 @@ module.exports = function (_, types) {
 
         created: function () {
             this.$set('key', '["' + this.name.replace('.', '"]["') + '"]');
+            this.attrs.class = this.attrs.class || this.class;
         },
 
         computed: {
