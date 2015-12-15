@@ -31,7 +31,7 @@ exports.alpha = function (value) {
     return /^([A-Z]+)?$/i.test(value);
 };
 
-exports.alphaNum = function (value) {
+exports.alphanum = function (value) {
     return /^([0-9A-Z]+)?$/i.test(value);
 };
 
