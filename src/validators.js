@@ -43,11 +43,11 @@ exports.url = function (value) {
     return /^((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)?$/.test(value);
 };
 
-exports.minLength = function (value, arg) {
+exports.minlength = function (value, arg) {
     return value && value.length && value.length >= +arg;
 };
 
-exports.maxLength = function (value, arg) {
+exports.maxlength = function (value, arg) {
     return value && value.length && value.length <= +arg;
 };
 
