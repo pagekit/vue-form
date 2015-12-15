@@ -17,7 +17,7 @@ module.exports = function (_) {
             }
 
             this.name = _.camelize(name);
-            this.type = this.arg || this.expression;
+            this.type = this.arg;
             this.value = this.el.value;
 
             this.el._dirty = false;
