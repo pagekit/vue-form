@@ -22,7 +22,9 @@ module.exports = function (_) {
 
             this.el._dirty = false;
             this.el._touched = false;
+            this.el._focused = false;
 
+            _.on(this.el, 'focus', this.listener.bind(this));
             _.on(this.el, 'blur', this.listener.bind(this));
             _.on(this.el, 'input', this.listener.bind(this));
 
@@ -49,6 +51,11 @@ module.exports = function (_) {
 
             if (e.type == 'blur') {
                 this.el._touched = true;
+                this.el._focused = false;
+            }
+
+            if (e.type == 'focus') {
+                this.el._focused = true;
             }
 
             if (this.el.value != this.value) {
