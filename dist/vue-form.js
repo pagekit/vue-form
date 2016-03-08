@@ -324,7 +324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 
 	        created: function () {
-	            this.$set('key', '["' + this.name.replace('.', '"]["') + '"]');
+	            this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
 	            this.attrs.class = this.attrs.class || this.class;
 	        },
 
@@ -584,7 +584,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return /^([A-Z]+)?$/i.test(value);
 	};
 
-	exports.alphaNum = function (value) {
+	exports.alphanum = function (value) {
 	    return /^([0-9A-Z]+)?$/i.test(value);
 	};
 
@@ -596,11 +596,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return /^((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)?$/.test(value);
 	};
 
-	exports.minLength = function (value, arg) {
+	exports.minlength = function (value, arg) {
 	    return value && value.length && value.length >= +arg;
 	};
 
-	exports.maxLength = function (value, arg) {
+	exports.maxlength = function (value, arg) {
 	    return value && value.length && value.length <= +arg;
 	};
 
@@ -646,7 +646,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            this.name = _.camelize(name);
-	            this.type = this.arg || this.expression;
+	            this.type = this.arg;
 	            this.value = this.el.value;
 
 	            this.el._dirty = false;

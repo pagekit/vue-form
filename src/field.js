@@ -20,7 +20,7 @@ module.exports = function (_, types) {
         },
 
         created: function () {
-            this.$set('key', '["' + this.name.replace('.', '"]["') + '"]');
+            this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
             this.attrs.class = this.attrs.class || this.class;
         },
 
