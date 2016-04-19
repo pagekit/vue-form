@@ -15,7 +15,8 @@ module.exports = function (_, types) {
                 type: 'text',
                 label: '',
                 attrs: {},
-                options: []
+                options: [],
+                default: undefined
             }, this.config);
         },
 
@@ -29,7 +30,8 @@ module.exports = function (_, types) {
             value: {
 
                 get: function () {
-                    return this.$get('values' + this.key);
+                    var value = this.$get('values' + this.key);
+                    return _.isUndefined(value) ? this.default : value;
                 },
 
                 set: function (value) {
