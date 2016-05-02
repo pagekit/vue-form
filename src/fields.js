@@ -94,7 +94,9 @@ module.exports = function (_, Vue) {
                         }
 
                         if (_.isString(field.name)) {
-                            flds.push(field);
+                            if (!field.show || (new Vue({data: this.values})).$eval(field.show)) {
+                                flds.push(field);
+                            }
                         } else {
                             _.warn('Field name missing ' + JSON.stringify(field));
                         }
