@@ -256,7 +256,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            _.warn('Field name missing ' + JSON.stringify(field));
 	                        }
 
-	                    });
+	                    }.bind(this));
 
 	                    return flds;
 	                }
