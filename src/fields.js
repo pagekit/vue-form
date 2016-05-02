@@ -101,7 +101,7 @@ module.exports = function (_, Vue) {
                             _.warn('Field name missing ' + JSON.stringify(field));
                         }
 
-                    });
+                    }.bind(this));
 
                     return flds;
                 }
