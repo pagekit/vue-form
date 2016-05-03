@@ -23,6 +23,10 @@ module.exports = function (_, types) {
         created: function () {
             this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
             this.attrs.class = this.attrs.class || this.class;
+
+            if (_.isUndefined(this.value) && !_.isUndefined(this.default)) {
+                this.value = this.default;
+            }
         },
 
         computed: {
@@ -30,8 +34,7 @@ module.exports = function (_, types) {
             value: {
 
                 get: function () {
-                    var value = this.$get('values' + this.key);
-                    return _.isUndefined(value) ? this.default : value;
+                    return this.$get('values' + this.key);
                 },
 
                 set: function (value) {
