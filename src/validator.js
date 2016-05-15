@@ -62,7 +62,8 @@ module.exports = function (_) {
                         valid: true,
                         invalid: false,
                         dirty: el._dirty,
-                        touched: el._touched
+                        touched: el._touched,
+                        focused: el._focused
                     };
                 }
 
