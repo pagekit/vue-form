@@ -2,7 +2,7 @@
  * Validator functions.
  */
 
-exports.required = function (value, arg) {
+export function required(value, arg) {
 
     if (!(typeof arg == 'boolean')) {
         arg = true;
@@ -13,58 +13,58 @@ exports.required = function (value, arg) {
     }
 
     return !arg || !((value === null) || (value.length === 0));
-};
+}
 
-exports.numeric = function (value) {
+export function numeric(value) {
     return /^[-+]?[0-9]+$/.test(value);
-};
+}
 
-exports.integer = function (value) {
+export function integer(value) {
     return /^(?:[-+]?(?:0|[1-9][0-9]*))$/.test(value);
-};
+}
 
-exports.float = function (value) {
+export function float(value) {
     return /^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/.test(value);
-};
+}
 
-exports.alpha = function (value) {
+export function alpha(value) {
     return /^([A-Z]+)?$/i.test(value);
-};
+}
 
-exports.alphanum = function (value) {
+export function alphanum(value) {
     return /^([0-9A-Z]+)?$/i.test(value);
-};
+}
 
-exports.email = function (value) {
+export function email(value) {
     return /^([a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*)?$/i.test(value || 'a@a.aa');
-};
+}
 
-exports.url = function (value) {
+export function url(value) {
     return /^((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)?$/.test(value);
-};
+}
 
-exports.minlength = function (value, arg) {
+export function minlength(value, arg) {
     return value && value.length && value.length >= +arg;
-};
+}
 
-exports.maxlength = function (value, arg) {
+export function maxlength(value, arg) {
     return value && value.length && value.length <= +arg;
-};
+}
 
-exports.length = function (value) {
+export function length(value) {
     return value && value.length == +arg;
-};
+}
 
-exports.min = function (value, arg) {
+export function min(value, arg) {
     return value >= +arg;
-};
+}
 
-exports.max = function (value, arg) {
+export function max(value, arg) {
     return value <= +arg;
-};
+}
 
-exports.pattern = function (value, arg) {
+export function pattern(value, arg) {
     var match = arg.match(new RegExp('^/(.*?)/([gimy]*)$'));
     var regex = new RegExp(match[1], match[2]);
     return regex.test(value);
-};
+}

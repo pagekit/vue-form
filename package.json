@@ -2,9 +2,9 @@
   "name": "vue-form",
   "version": "0.1.0",
   "description": "A form generator for Vue.js",
-  "main": "dist/vue-form.js",
+  "main": "dist/vue-form.common.js",
   "scripts": {
-    "build": "webpack --config build/webpack.build.config.js"
+    "build": "node build.js"
   },
   "keywords": [
     "vue",
@@ -13,8 +13,11 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "html-loader": "^0.3.0",
-    "vue": "^1.0.4",
-    "webpack": "^1.11.0"
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "rollup": "^0.31.1",
+    "rollup-plugin-babel": "^2.5.1",
+    "rollup-plugin-string": "^2.0.0",
+    "uglify-js": "^2.6.2"
   }
 }

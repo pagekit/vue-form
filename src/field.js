@@ -1,4 +1,6 @@
-module.exports = function (_, types) {
+import { each, warn, isObject, isString, isUndefined} from './util';
+
+export default function (types) {
 
     var Field = {
 
@@ -8,8 +10,8 @@ module.exports = function (_, types) {
 
         template: '<partial :name="type"></partial>',
 
-        data: function () {
-            return _.extend({
+        data() {
+            return Object.assign({
                 key: '',
                 name: '',
                 type: 'text',
@@ -20,11 +22,11 @@ module.exports = function (_, types) {
             }, this.config);
         },
 
-        created: function () {
+        created() {
             this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
             this.attrs.class = this.attrs.class || this.class;
 
-            if (_.isUndefined(this.value) && !_.isUndefined(this.default)) {
+            if (isUndefined(this.value) && !isUndefined(this.default)) {
                 this.value = this.default;
             }
         },
@@ -33,11 +35,11 @@ module.exports = function (_, types) {
 
             value: {
 
-                get: function () {
+                get() {
                     return this.$get('values' + this.key);
                 },
 
-                set: function (value) {
+                set(value) {
                     this.$set('values' + this.key, value);
                 }
 
@@ -47,22 +49,22 @@ module.exports = function (_, types) {
 
         methods: {
 
-            filterOptions: function (options) {
+            filterOptions(options) {
 
                 var opts = [];
 
                 if (!options) {
-                    _.warn('Invalid options provided for ' + this.name);
+                    warn('Invalid options provided for ' + this.name);
                     return opts;
                 }
 
-                _.each(options, function (value, name) {
-                    if (_.isObject(value)) {
+                each(options, (value, name) => {
+                    if (isObject(value)) {
                         opts.push({label: name, options: this.filterOptions(value)});
                     } else {
                         opts.push({text: name, value: value});
                     }
-                }, this);
+                });
 
                 return opts;
             }
@@ -71,7 +73,7 @@ module.exports = function (_, types) {
 
         filters: {
 
-            options: function (options) {
+            options(options) {
                 return this.filterOptions(options);
             }
 
@@ -83,16 +85,16 @@ module.exports = function (_, types) {
 
     };
 
-    _.each(types, function (type, name) {
-        if (_.isString(type)) {
+    each(types, (type, name) => {
+        if (isString(type)) {
             Field.partials[name] = type;
-        } else if (_.isObject(type)) {
+        } else if (isObject(type)) {
             Field.partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
-            Field.components[name] = function (resolve) {
+            Field.components[name] = (resolve) => {
                 resolve(type);
             };
         }
     });
 
     return Field;
-};
+}

@@ -2,22 +2,30 @@
  * Install plugin.
  */
 
-module.exports = function (Vue) {
+import Util from './util';
+import Fields, { Mixin } from './fields';
+import { Validate } from './validate';
+import { Validator, Filter, Directive } from './validator';
 
-    var _ = require('./lib/util')(Vue);
-    var field = require('./fields')(_, Vue);
-    var validator = require('./validator')(_);
+function plugin(Vue) {
 
-    Vue.field = field;
-    Vue.mixin(field.mixin);
+    if (plugin.installed) {
+        return;
+    }
 
-    Vue.validator = validator;
-    Vue.filter('valid', validator.filter);
-    Vue.directive('validator', validator.directive);
-    Vue.directive('validate', require('./validate')(_));
+    Util(Vue);
 
-};
+    Vue.field = Fields;
+    Vue.mixin(Mixin);
 
-if (window.Vue) {
-    Vue.use(module.exports);
+    Vue.validator = Validator;
+    Vue.filter('valid', Filter);
+    Vue.directive('validator', Directive);
+    Vue.directive('validate', Validate);
 }
+
+if (typeof window !== 'undefined' && window.Vue) {
+    window.Vue.use(plugin);
+}
+
+export default plugin;
