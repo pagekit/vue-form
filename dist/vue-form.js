@@ -115,7 +115,7 @@
 
           props: ['config', 'values', 'class'],
 
-          template: '<partial :class="class" :name="type"></partial>',
+          template: '<partial :name="type"></partial>',
 
           data: function data() {
               return _extends({
