@@ -111,7 +111,7 @@ function Field (types) {
 
         props: ['config', 'values', 'class'],
 
-        template: '<partial :name="type"></partial>',
+        template: '<partial :class="class" :name="type"></partial>',
 
         data: function data() {
             return _extends({
@@ -126,7 +126,6 @@ function Field (types) {
         },
         created: function created() {
             this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
-            this.attrs.class = this.attrs.class || this.class;
 
             if (isUndefined(this.value) && !isUndefined(this.default)) {
                 this.value = this.default;
@@ -308,9 +307,9 @@ function Fields(options) {
 Fields.types = {
     text: '<input type="text" v-bind="attrs" v-model="value">',
     textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-    radio: '<template v-for="option in options | options">' + '<input type="radio" v-bind="attrs" :value="option.value" v-model="value"> <label>{{ option.text }}</label>' + '</template>',
+    radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
     checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-    select: '<select v-bind="attrs" v-model="value">' + '<template v-for="option in options | options">' + '<optgroup :label="option.label" v-if="option.label">' + '<option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>' + '</optgroup>' + '<option :value="option.value" v-else>{{ option.text }}</option>' + '</template>' + '</select>'
+    select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>'
 };
 
 Fields.templates = {

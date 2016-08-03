@@ -8,7 +8,7 @@ export default function (types) {
 
         props: ['config', 'values', 'class'],
 
-        template: '<partial :name="type"></partial>',
+        template: '<partial :class="class" :name="type"></partial>',
 
         data() {
             return Object.assign({
@@ -23,8 +23,7 @@ export default function (types) {
         },
 
         created() {
-            this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
-            this.attrs.class = this.attrs.class || this.class;
+            this.$set('key', `["${this.name.replace(/\./g, '"]["')}"]`);
 
             if (isUndefined(this.value) && !isUndefined(this.default)) {
                 this.value = this.default;
@@ -36,11 +35,11 @@ export default function (types) {
             value: {
 
                 get() {
-                    return this.$get('values' + this.key);
+                    return this.$get(`values${this.key}`);
                 },
 
                 set(value) {
-                    this.$set('values' + this.key, value);
+                    this.$set(`values${this.key}`, value);
                 }
 
             }
@@ -54,7 +53,7 @@ export default function (types) {
                 var opts = [];
 
                 if (!options) {
-                    warn('Invalid options provided for ' + this.name);
+                    warn(`Invalid options provided for ${this.name}`);
                     return opts;
                 }
 

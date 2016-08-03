@@ -13,7 +13,7 @@ export default function (Vue) {
 
 export function warn(msg) {
     if (typeof console !== 'undefined' && debug) {
-        console.warn('[VueForm warn]: ' + msg);
+        console.warn(`[VueForm warn]: ${msg}`);
     }
 }
 

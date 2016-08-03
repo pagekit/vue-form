@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "description": "A form generator for Vue.js",
   "main": "dist/vue-form.common.js",
-  "scripts": {
-    "build": "node build.js"
-  },
   "keywords": [
     "vue",
     "vuejs",
