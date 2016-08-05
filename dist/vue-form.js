@@ -311,7 +311,7 @@
   Fields.types = {
       text: '<input type="text" v-bind="attrs" v-model="value">',
       textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-      radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
+      radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
       checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
       select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>'
   };

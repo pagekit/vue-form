@@ -122,7 +122,7 @@ Fields.types = {
     text:       '<input type="text" v-bind="attrs" v-model="value">',
     textarea:   '<textarea v-bind="attrs" v-model="value"></textarea>',
     radio:      `<template v-for="option in options | options">
-                    <input type="radio" v-bind="attrs" :value="option.value" v-model="value"> <label>{{ option.text }}</label>
+                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>
                  </template>`,
     checkbox:   '<input type="checkbox" v-bind="attrs" v-model="value">',
     select:     `<select v-bind="attrs" v-model="value">
