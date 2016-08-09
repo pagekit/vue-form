@@ -24,10 +24,6 @@ export default function (types) {
 
         created() {
             this.$set('key', `["${this.name.replace(/\./g, '"]["')}"]`);
-
-            if (isUndefined(this.value) && !isUndefined(this.default)) {
-                this.value = this.default;
-            }
         },
 
         computed: {
@@ -35,11 +31,24 @@ export default function (types) {
             value: {
 
                 get() {
-                    return this.$get(`values${this.key}`);
+
+                    var value = this.$get(`values${this.key}`);
+
+                    if (isUndefined(value) && !isUndefined(this.default)) {
+                        if (value = this.default) {
+                            this.$set(`values${this.key}`, value);
+                        }
+                    }
+
+                    return value;
                 },
 
                 set(value) {
-                    this.$set(`values${this.key}`, value);
+
+                    if (!isUndefined(this.value) || value) {
+                        this.$set(`values${this.key}`, value);
+                    }
+
                 }
 
             }
