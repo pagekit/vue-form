@@ -8,6 +8,7 @@ export default {
 
     data() {
         return Object.assign({
+            key: '',
             name: '',
             type: 'text',
             label: '',
@@ -17,11 +18,13 @@ export default {
         }, this.field);
     },
 
-    computed: {
+    created() {
 
-        key() {
-            return `["${this.name.replace(/\./g, '"]["')}"]`;
-        },
+        this.key = `["${this.name.replace(/\./g, '"]["')}"]`;
+
+    },
+
+    computed: {
 
         value: {
 
