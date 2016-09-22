@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Form</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+        <script src="../dist/vue-form.min.js"></script>
+    </head>
+    <body>
+
+        <div id="app" class="container">
+
+            <h1>Form</h1>
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <fields :config="fields" :model="values"></fields>
+                </div>
+            </div>
+
+            <pre>{{ values | json }}</pre>
+
+        </div>
+
+        <script>
+
+            new Vue({
+
+                el: '#app',
+
+                data: {
+
+                    fields: {
+
+                        text: {
+                            label: 'Text',
+                            type: 'text'
+                        },
+
+                        textarea: {
+                            label: 'Textarea',
+                            type: 'textarea'
+                        },
+
+                        select: {
+                            label: 'Select',
+                            type: 'select',
+                            options: {
+                                one: 1,
+                                two: 2,
+                                three: 3
+                            }
+                        }
+
+                    },
+
+                    values: {}
+
+                }
+
+            });
+
+        </script>
+
+    </body>
+</html>
