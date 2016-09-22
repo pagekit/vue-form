@@ -15,16 +15,8 @@ function plugin(Vue) {
 
     Util(Vue);
 
-    Vue.field = Fields(Vue);
-
-    Vue.mixin({
-
-        created() {
-            this.$options.components.fields = Vue.extend(Vue.field);
-        }
-
-    });
-
+    Vue.fields = Fields(Vue);
+    Vue.component('fields', Vue.fields);
     Vue.validator = Validator;
     Vue.filter('valid', Filter);
     Vue.directive('validator', Directive);

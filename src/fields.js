@@ -8,8 +8,6 @@ export default function Fields (Vue) {
 
         name: 'fields',
 
-        template: Template,
-
         props: {
 
             config: {
@@ -18,10 +16,6 @@ export default function Fields (Vue) {
 
             values: {
                 type: Object
-            },
-
-            template: {
-                type: String
             }
 
         },
@@ -34,10 +28,6 @@ export default function Fields (Vue) {
                 warn('Invalid config or model provided');
                 this.$options.template = '';
                 return;
-            }
-
-            if (this.template && this.template in templates) {
-                this.$options.template = templates[this.template];
             }
 
             for (var name in fields) {
@@ -118,9 +108,9 @@ export default function Fields (Vue) {
             number: '<input type="number" v-bind="attrs" v-model="value">'
         },
 
-        templates: {},
+        components: {},
 
-        components: {}
+        template: Template
 
     }
 
