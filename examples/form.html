@@ -65,9 +65,9 @@
                             }
                         },
 
-                        override: {
-                            label: 'Text Input overwritten',
-                            type: 'text'
+                        number: {
+                            label: 'Number',
+                            type: 'number'
                         },
 
                         custom: {
@@ -93,20 +93,18 @@
 
                                         <div class="form-group" v-for="field in fields">
                                             <label v-if="field.type != 'checkbox'">{{ field.label }}</label>
-                                            <component class="form-control" :is="field.type" :config="field"></component>
+                                            <component class="form-control" :is="field.type" :field="field"></component>
                                         </div>
 
                                     </div>`,
 
-                        types: {
+                        fields: {
 
-                            text: '<input type="number" v-bind="attrs" v-model="value">',
+                            number: '<input style="border: 1px solid red" type="number" v-bind="attrs" v-model="value">',
 
                             custom: {
 
-                                props: ['config', 'value'],
-
-                                template: '<input type="text" v-bind="attrs" v-model="value">'
+                                template: '<input style="border: 1px solid red" type="text" v-bind="attrs" v-model="value">'
 
                             }
 

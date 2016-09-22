@@ -107,7 +107,7 @@ var Field = {
 
     name: 'field',
 
-    props: ['config'],
+    props: ['field'],
 
     data: function data() {
         return _extends({
@@ -117,7 +117,7 @@ var Field = {
             attrs: {},
             options: [],
             default: undefined
-        }, this.config);
+        }, this.field);
     },
 
 
@@ -130,11 +130,11 @@ var Field = {
         value: {
             get: function get() {
 
-                var value = this.$parent.get(this);
+                var value = this.$parent.getField(this);
 
                 if (isUndefined(value) && !isUndefined(this.default)) {
                     if (value = this.default) {
-                        this.$parent.set(this, value);
+                        this.$parent.setField(this, value);
                     }
                 }
 
@@ -143,7 +143,7 @@ var Field = {
             set: function set(value) {
 
                 if (!isUndefined(this.value) || value) {
-                    this.$parent.set(this, value);
+                    this.$parent.setField(this, value);
                 }
             }
         }
@@ -181,7 +181,7 @@ var Field = {
 
 };
 
-var Template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :config=\"field\"></component>\n    </div>\n\n</div>\n";
+var Template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :field=\"field\"></component>\n    </div>\n\n</div>\n";
 
 function Fields(Vue) {
 
@@ -194,7 +194,7 @@ function Fields(Vue) {
         props: {
 
             config: {
-                default: ''
+                type: Object
             },
 
             values: {
@@ -209,12 +209,12 @@ function Fields(Vue) {
 
         created: function created() {
             var _$options = this.$options;
-            var types = _$options.types;
+            var fields = _$options.fields;
             var templates = _$options.templates;
             var components = _$options.components;
 
 
-            if (!this.config || !this.values) {
+            if (!this.fields.length || !this.values) {
                 warn('Invalid config or model provided');
                 this.$options.template = '';
                 return;
@@ -224,8 +224,8 @@ function Fields(Vue) {
                 this.$options.template = templates[this.template];
             }
 
-            for (var name in types) {
-                var type = types[name];
+            for (var name in fields) {
+                var type = fields[name];
                 if (isString(type)) {
                     type = Vue.extend({ extends: Field, template: type });
                 } else if (isObject(type)) {
@@ -239,18 +239,30 @@ function Fields(Vue) {
 
         computed: {
             fields: function fields() {
+                return this.filterFields(this.config);
+            }
+        },
+
+        methods: {
+            getField: function getField(field) {
+                return this.$get('values' + field.key);
+            },
+            setField: function setField(field, value) {
+                this.$set('values' + field.key, value);
+            },
+            filterFields: function filterFields(config) {
                 var _this = this;
 
-                var arr = isArray(this.config),
+                var arr = isArray(config),
                     fields = [];
 
-                each(this.config, function (field, name) {
+                each(config, function (field, name) {
 
                     if (!isString(field.name) && !arr) {
                         field.name = name;
                     }
 
-                    if (!isString(field.type) || !(field.type in _this.$options.types)) {
+                    if (!isString(field.type)) {
                         field.type = 'text';
                     }
 
@@ -267,16 +279,7 @@ function Fields(Vue) {
             }
         },
 
-        methods: {
-            get: function get(field) {
-                return this.$get('values' + field.key);
-            },
-            set: function set(field, value) {
-                this.$set('values' + field.key, value);
-            }
-        },
-
-        types: {
+        fields: {
             text: '<input type="text" v-bind="attrs" v-model="value">',
             textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
             radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
@@ -610,7 +613,7 @@ function plugin(Vue) {
     Vue.directive('validator', Directive);
     Vue.directive('validate', Validate);
 
-    Vue.config.optionMergeStrategies.types = Vue.config.optionMergeStrategies.props;
+    Vue.config.optionMergeStrategies.fields = Vue.config.optionMergeStrategies.props;
 }
 
 if (typeof window !== 'undefined' && window.Vue) {

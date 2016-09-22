@@ -30,7 +30,7 @@ function plugin(Vue) {
     Vue.directive('validator', Directive);
     Vue.directive('validate', Validate);
 
-    Vue.config.optionMergeStrategies.types = Vue.config.optionMergeStrategies.props;
+    Vue.config.optionMergeStrategies.fields = Vue.config.optionMergeStrategies.props;
 
 }
 

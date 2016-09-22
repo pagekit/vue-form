@@ -4,7 +4,7 @@ export default {
 
     name: 'field',
 
-    props: ['config'],
+    props: ['field'],
 
     data() {
         return Object.assign({
@@ -14,7 +14,7 @@ export default {
             attrs: {},
             options: [],
             default: undefined
-        }, this.config);
+        }, this.field);
     },
 
     computed: {
@@ -27,11 +27,11 @@ export default {
 
             get() {
 
-                var value = this.$parent.get(this);
+                var value = this.$parent.getField(this);
 
                 if (isUndefined(value) && !isUndefined(this.default)) {
                     if (value = this.default) {
-                        this.$parent.set(this, value);
+                        this.$parent.setField(this, value);
                     }
                 }
 
@@ -41,7 +41,7 @@ export default {
             set(value) {
 
                 if (!isUndefined(this.value) || value) {
-                    this.$parent.set(this, value);
+                    this.$parent.setField(this, value);
                 }
 
             }

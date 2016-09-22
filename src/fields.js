@@ -13,7 +13,7 @@ export default function Fields (Vue) {
         props: {
 
             config: {
-                default: ''
+                type: Object
             },
 
             values: {
@@ -28,9 +28,9 @@ export default function Fields (Vue) {
 
         created() {
 
-            var {types, templates, components} = this.$options;
+            var {fields, templates, components} = this.$options;
 
-            if (!this.config || !this.values) {
+            if (!this.fields.length || !this.values) {
                 warn('Invalid config or model provided');
                 this.$options.template = '';
                 return;
@@ -40,8 +40,8 @@ export default function Fields (Vue) {
                 this.$options.template = templates[this.template];
             }
 
-            for (var name in types) {
-                var type = types[name];
+            for (var name in fields) {
+                var type = fields[name];
                 if (isString(type)) {
                     type = Vue.extend({extends: Field, template: type});
                 } else if (isObject(type)) {
@@ -56,16 +56,31 @@ export default function Fields (Vue) {
         computed: {
 
             fields() {
+                return this.filterFields(this.config);
+            }
 
-                var arr = isArray(this.config), fields = [];
+        },
 
-                each(this.config, (field, name) => {
+        methods: {
+
+            getField(field) {
+                return this.$get(`values${field.key}`);
+            },
+
+            setField(field, value) {
+                this.$set(`values${field.key}`, value);
+            },
+
+            filterFields(config) {
+                var arr = isArray(config), fields = [];
+
+                each(config, (field, name) => {
 
                     if (!isString(field.name) && !arr) {
                         field.name = name;
                     }
 
-                    if (!isString(field.type) || !(field.type in this.$options.types)) {
+                    if (!isString(field.type)) {
                         field.type = 'text';
                     }
 
@@ -84,19 +99,7 @@ export default function Fields (Vue) {
 
         },
 
-        methods: {
-
-            get(field) {
-                return this.$get(`values${field.key}`);
-            },
-
-            set(field, value) {
-                this.$set(`values${field.key}`, value);
-            }
-
-        },
-
-        types: {
+        fields: {
             text: '<input type="text" v-bind="attrs" v-model="value">',
             textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
             radio: `<template v-for="option in options | options">
