@@ -22,7 +22,7 @@ export default function Fields (Vue) {
 
         created() {
 
-            var {fields, templates, components} = this.$options;
+            var {fields, components} = this.$options;
 
             if (!this.fields.length || !this.values) {
                 warn('Invalid config or model provided');

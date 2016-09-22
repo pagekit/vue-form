@@ -204,7 +204,6 @@ function Fields(Vue) {
         created: function created() {
             var _$options = this.$options;
             var fields = _$options.fields;
-            var templates = _$options.templates;
             var components = _$options.components;
 
 
