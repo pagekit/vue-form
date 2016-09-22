@@ -6,8 +6,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
-        <script src="../dist/vue-form.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js"></script>
+        <script src="../dist/vue-form.js"></script>
     </head>
     <body>
 
@@ -15,10 +15,20 @@
 
             <h1>Form</h1>
 
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <fields :config="fields" :model="values"></fields>
-                </div>
+            <div class="panel panel-default">
+
+                <div class="panel-heading"><h2 class="panel-title">Regular Fields</h2></div>
+
+                <fields class="panel-body" :config="fields" :values="values"></fields>
+
+            </div>
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading"><h2 class="panel-title">Custom Fields</h2></div>
+
+                <custom-fields class="panel-body" :config="fields" :values="values"></custom-fields>
+
             </div>
 
             <pre>{{ values | json }}</pre>
@@ -53,11 +63,56 @@
                                 two: 2,
                                 three: 3
                             }
+                        },
+
+                        override: {
+                            label: 'Text Input overwritten',
+                            type: 'text'
+                        },
+
+                        custom: {
+
+                            label: 'Custom',
+                            type: 'custom'
+
                         }
 
                     },
 
                     values: {}
+
+                },
+
+                components: {
+
+                    customFields: {
+
+                        mixins: [Vue.field],
+
+                        template: `<div>
+
+                                        <div class="form-group" v-for="field in fields">
+                                            <label v-if="field.type != 'checkbox'">{{ field.label }}</label>
+                                            <component class="form-control" :is="field.type" :config="field"></component>
+                                        </div>
+
+                                    </div>`,
+
+                        types: {
+
+                            text: '<input type="number" v-bind="attrs" v-model="value">',
+
+                            custom: {
+
+                                props: ['config', 'value'],
+
+                                template: '<input type="text" v-bind="attrs" v-model="value">'
+
+                            }
+
+                        }
+
+                    }
 
                 }
 
