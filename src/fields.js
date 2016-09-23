@@ -11,7 +11,10 @@ export default function (Vue) {
         props: {
 
             config: {
-                type: Object
+                type: [Array, Object],
+                default() {
+                    return [];
+                }
             },
 
             values: {

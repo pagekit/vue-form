@@ -197,7 +197,10 @@
           props: {
 
               config: {
-                  type: Object
+                  type: [Array, Object],
+                  default: function _default() {
+                      return [];
+                  }
               },
 
               values: {
