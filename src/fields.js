@@ -29,7 +29,6 @@ export default function (Vue) {
 
             if (!this.fields.length || !this.values) {
                 warn('Invalid config or model provided');
-                this.$options.template = '';
                 return;
             }
 
