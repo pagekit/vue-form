@@ -111,6 +111,7 @@ var Field = {
 
     data: function data() {
         return _extends({
+            key: '',
             name: '',
             type: 'text',
             label: '',
@@ -119,13 +120,13 @@ var Field = {
             default: undefined
         }, this.field);
     },
+    created: function created() {
+
+        this.key = '["' + this.name.replace(/\./g, '"]["') + '"]';
+    },
 
 
     computed: {
-        key: function key() {
-            return '["' + this.name.replace(/\./g, '"]["') + '"]';
-        },
-
 
         value: {
             get: function get() {
@@ -183,7 +184,7 @@ var Field = {
 
 var Template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :field=\"field\"></component>\n    </div>\n\n</div>\n";
 
-function Fields(Vue) {
+function Fields (Vue) {
 
     return {
 
@@ -213,8 +214,7 @@ function Fields(Vue) {
                 return;
             }
 
-            for (var name in fields) {
-                var type = fields[name];
+            each(_extends({}, Vue.fields, fields), function (type, name) {
                 if (isString(type)) {
                     type = Vue.extend({ extends: Field, template: type });
                 } else if (isObject(type)) {
@@ -222,7 +222,7 @@ function Fields(Vue) {
                 }
 
                 components[name] = type;
-            }
+            });
         },
 
 
@@ -268,21 +268,23 @@ function Fields(Vue) {
             }
         },
 
-        fields: {
-            text: '<input type="text" v-bind="attrs" v-model="value">',
-            textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-            radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
-            checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-            select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>',
-            range: '<input type="range" v-bind="attrs" v-model="value">',
-            number: '<input type="number" v-bind="attrs" v-model="value">'
-        },
+        fields: {},
 
         components: {},
 
         template: Template
 
     };
+};
+
+var fields = {
+    text: '<input type="text" v-bind="attrs" v-model="value">',
+    textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
+    radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
+    checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
+    select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>',
+    range: '<input type="range" v-bind="attrs" v-model="value">',
+    number: '<input type="number" v-bind="attrs" v-model="value">'
 };
 
 /**
@@ -589,8 +591,9 @@ function plugin(Vue) {
 
     Util(Vue);
 
-    Vue.fields = Fields(Vue);
-    Vue.component('fields', Vue.fields);
+    Vue.fields = fields;
+    Vue.component('fields', Fields(Vue));
+
     Vue.validator = Validator;
     Vue.filter('valid', Filter);
     Vue.directive('validator', Directive);

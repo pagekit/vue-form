@@ -2,7 +2,7 @@ import Field from './field';
 import Template from './templates/default.html';
 import { each, warn, isArray, isObject, isString } from './util';
 
-export default function Fields (Vue) {
+export default function (Vue) {
 
     return {
 
@@ -30,8 +30,7 @@ export default function Fields (Vue) {
                 return;
             }
 
-            for (var name in fields) {
-                var type = fields[name];
+            each(Object.assign({}, Vue.fields, fields), (type, name) => {
                 if (isString(type)) {
                     type = Vue.extend({extends: Field, template: type});
                 } else if (isObject(type)) {
@@ -39,7 +38,7 @@ export default function Fields (Vue) {
                 }
 
                 components[name] = type;
-            }
+            });
 
         },
 
@@ -89,24 +88,7 @@ export default function Fields (Vue) {
 
         },
 
-        fields: {
-            text: '<input type="text" v-bind="attrs" v-model="value">',
-            textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-            radio: `<template v-for="option in options | options">
-                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>
-                 </template>`,
-            checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-            select: `<select v-bind="attrs" v-model="value">
-                     <template v-for="option in options | options">
-                         <optgroup :label="option.label" v-if="option.label">
-                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>
-                         </optgroup>
-                         <option :value="option.value" v-else>{{ option.text }}</option>
-                     </template>
-                 </select>`,
-            range: '<input type="range" v-bind="attrs" v-model="value">',
-            number: '<input type="number" v-bind="attrs" v-model="value">'
-        },
+        fields: {},
 
         components: {},
 
@@ -114,4 +96,23 @@ export default function Fields (Vue) {
 
     }
 
+};
+
+export var fields = {
+    text: '<input type="text" v-bind="attrs" v-model="value">',
+    textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
+    radio: `<template v-for="option in options | options">
+                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>
+                 </template>`,
+    checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
+    select: `<select v-bind="attrs" v-model="value">
+                     <template v-for="option in options | options">
+                         <optgroup :label="option.label" v-if="option.label">
+                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>
+                         </optgroup>
+                         <option :value="option.value" v-else>{{ option.text }}</option>
+                     </template>
+                 </select>`,
+    range: '<input type="range" v-bind="attrs" v-model="value">',
+    number: '<input type="number" v-bind="attrs" v-model="value">'
 };
