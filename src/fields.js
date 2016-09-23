@@ -54,12 +54,12 @@ export default function (Vue) {
 
         methods: {
 
-            getField(field) {
-                return this.$get(`values${field.key}`);
+            getField({key}) {
+                return this.$get(`values${key}`);
             },
 
-            setField(field, value) {
-                this.$set(`values${field.key}`, value);
+            setField({key}, value) {
+                this.$set(`values${key}`, value);
             },
 
             filterFields(config) {

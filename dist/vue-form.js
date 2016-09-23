@@ -239,11 +239,15 @@
           },
 
           methods: {
-              getField: function getField(field) {
-                  return this.$get('values' + field.key);
+              getField: function getField(_ref) {
+                  var key = _ref.key;
+
+                  return this.$get('values' + key);
               },
-              setField: function setField(field, value) {
-                  this.$set('values' + field.key, value);
+              setField: function setField(_ref2, value) {
+                  var key = _ref2.key;
+
+                  this.$set('values' + key, value);
               },
               filterFields: function filterFields(config) {
                   var _this = this;
