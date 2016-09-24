@@ -33,9 +33,13 @@ export default function (Vue) {
             }
 
             each(Object.assign({}, Vue.fields, fields), (type, name) => {
+
                 if (isString(type)) {
-                    type = Vue.extend({extends: Field, template: type});
-                } else if (isObject(type)) {
+                    type = {template: type};
+                }
+
+                if (isObject(type)) {
+                    type.name = type.name || `field-${name}`;
                     type = Vue.extend(Field).extend(type);
                 }
 
