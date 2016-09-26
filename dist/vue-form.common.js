@@ -107,7 +107,7 @@ var Field = {
 
     name: 'field',
 
-    props: ['field'],
+    props: ['field', 'class'],
 
     data: function data() {
         return _extends({
