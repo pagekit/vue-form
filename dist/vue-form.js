@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.1.0
+ * vue-form v0.3.0
  * Released under the MIT License.
  */
 
@@ -186,7 +186,7 @@
 
   };
 
-  var Template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :field=\"field\"></component>\n    </div>\n\n</div>\n";
+  var template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :field=\"field\"></component>\n    </div>\n\n</div>\n";
 
   function Fields (Vue) {
 
@@ -286,7 +286,7 @@
 
           components: {},
 
-          template: Template
+          template: template
 
       };
   };
