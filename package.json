@@ -1,6 +1,6 @@
 {
   "name": "vue-form",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "A form generator for Vue.js",
   "main": "dist/vue-form.common.js",
   "keywords": [
