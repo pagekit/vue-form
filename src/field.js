@@ -1,108 +1,88 @@
-import { each, warn, isObject, isString, isUndefined} from './util';
+import { each, warn, isObject, isUndefined} from './util';
 
-export default function (types) {
+export default {
 
-    var Field = {
+    name: 'field',
 
-        name: 'field',
+    props: ['field'],
 
-        props: ['config', 'values', 'class'],
+    data() {
+        return Object.assign({
+            key: '',
+            name: '',
+            type: 'text',
+            label: '',
+            attrs: {},
+            options: [],
+            default: undefined
+        }, this.field);
+    },
 
-        template: '<partial :name="type"></partial>',
+    created() {
 
-        data() {
-            return Object.assign({
-                key: '',
-                name: '',
-                type: 'text',
-                label: '',
-                attrs: {},
-                options: [],
-                default: undefined
-            }, this.config);
-        },
+        this.key = `["${this.name.replace(/\./g, '"]["')}"]`;
 
-        created() {
-            this.$set('key', `["${this.name.replace(/\./g, '"]["')}"]`);
-        },
+    },
 
-        computed: {
+    computed: {
 
-            value: {
+        value: {
 
-                get() {
+            get() {
 
-                    var value = this.$get(`values${this.key}`);
+                var value = this.$parent.getField(this);
 
-                    if (isUndefined(value) && !isUndefined(this.default)) {
-                        if (value = this.default) {
-                            this.$set(`values${this.key}`, value);
-                        }
+                if (isUndefined(value) && !isUndefined(this.default)) {
+                    if (value = this.default) {
+                        this.$parent.setField(this, value);
                     }
+                }
 
-                    return value;
-                },
+                return value;
+            },
 
-                set(value) {
+            set(value) {
 
-                    if (!isUndefined(this.value) || value) {
-                        this.$set(`values${this.key}`, value);
-                    }
-
+                if (!isUndefined(this.value) || value) {
+                    this.$parent.setField(this, value);
                 }
 
             }
 
-        },
+        }
 
-        methods: {
+    },
 
-            filterOptions(options) {
+    methods: {
 
-                var opts = [];
+        filterOptions(options) {
 
-                if (!options) {
-                    warn(`Invalid options provided for ${this.name}`);
-                    return opts;
-                }
+            var opts = [];
 
-                each(options, (value, name) => {
-                    if (isObject(value)) {
-                        opts.push({label: name, options: this.filterOptions(value)});
-                    } else {
-                        opts.push({text: name, value: value});
-                    }
-                });
-
+            if (!options) {
+                warn(`Invalid options provided for ${this.name}`);
                 return opts;
             }
 
-        },
+            each(options, (value, name) => {
+                if (isObject(value)) {
+                    opts.push({label: name, options: this.filterOptions(value)});
+                } else {
+                    opts.push({text: name, value: value});
+                }
+            });
 
-        filters: {
-
-            options(options) {
-                return this.filterOptions(options);
-            }
-
-        },
-
-        partials: {},
-
-        components: {}
-
-    };
-
-    each(types, (type, name) => {
-        if (isString(type)) {
-            Field.partials[name] = type;
-        } else if (isObject(type)) {
-            Field.partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
-            Field.components[name] = (resolve) => {
-                resolve(type);
-            };
+            return opts;
         }
-    });
 
-    return Field;
-}
+    },
+
+    filters: {
+
+        options(options) {
+            return this.filterOptions(options);
+        }
+
+    }
+
+};

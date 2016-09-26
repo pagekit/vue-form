@@ -1,8 +1,8 @@
 import Field from './field';
-import Template from './templates/default.html';
+import template from './templates/default.html';
 import { each, warn, isArray, isObject, isString } from './util';
 
-export default function Fields(options) {
+export default function (Vue) {
 
     return {
 
@@ -11,93 +11,77 @@ export default function Fields(options) {
         props: {
 
             config: {
-                default: ''
+                type: [Array, Object],
+                default() {
+                    return [];
+                }
             },
 
-            model: {
-                default: ''
-            },
-
-            template: {
-                type: String,
-                default: 'default'
+            values: {
+                type: Object
             }
 
         },
 
         created() {
 
-            if (!this.fields || !this.values) {
+            var {fields, components} = this.$options;
+
+            if (!this.fields.length || !this.values) {
                 warn('Invalid config or model provided');
-                this.$options.template = '';
                 return;
             }
 
-            if (!this.$options.template) {
-                this.$options.template = Fields.templates[this.template];
-            }
+            each(Object.assign({}, Vue.fields, fields), (type, name) => {
+
+                if (isString(type)) {
+                    type = {template: type};
+                }
+
+                if (isObject(type)) {
+                    type.name = type.name || `field-${name}`;
+                    type = Vue.extend(Field).extend(type);
+                }
+
+                components[name] = type;
+            });
 
         },
 
         computed: {
 
             fields() {
-
-                var vm = this;
-
-                if (isObject(this.config)) {
-                    return this.filterFields(this.config);
-                }
-
-                do {
-
-                    if (isObject(vm.$options[this.config])) {
-                        return this.filterFields(vm.$options[this.config]);
-                    }
-
-                    vm = vm.$parent;
-
-                } while (vm);
-
-            },
-
-            values() {
-
-                var vm = this;
-
-                if (isObject(this.model)) {
-                    return this.model;
-                }
-
-                do {
-
-                    if (isObject(vm.$get(this.model))) {
-                        return vm.$get(this.model);
-                    }
-
-                    vm = vm.$parent;
-
-                } while (vm);
-
+                return this.filterFields(this.config);
             }
 
         },
 
         methods: {
 
-            filterFields(fields) {
+            getField({key}) {
+                return this.$get(`values${key}`);
+            },
 
-                var arr = isArray(fields), flds = [];
+            setField({key}, value) {
+                this.$set(`values${key}`, value);
+            },
 
-                each(fields, (field, name) => {
+            filterFields(config) {
+                var arr = isArray(config), fields = [];
+
+                each(config, (field, name) => {
 
                     if (!isString(field.name) && !arr) {
                         field.name = name;
                     }
 
+                    if (!isString(field.type)) {
+                        field.type = 'text';
+                    }
+
                     if (isString(field.name)) {
                         if (!field.show || (new Vue({data: this.values})).$eval(field.show)) {
-                            flds.push(field);
+                            fields.push(field);
                         }
                     } else {
                         warn(`Field name missing ${JSON.stringify(field)}`);
@@ -105,44 +89,36 @@ export default function Fields(options) {
 
                 });
 
-                return flds;
+                return fields;
             }
 
         },
 
-        components: {
-            field: Field(Object.assign(options.fields || {}, Fields.types))
-        }
+        fields: {},
 
-    };
+        components: {},
 
-}
+        template
 
-Fields.types = {
-    text:       '<input type="text" v-bind="attrs" v-model="value">',
-    textarea:   '<textarea v-bind="attrs" v-model="value"></textarea>',
-    radio:      `<template v-for="option in options | options">
+    }
+
+};
+
+export var fields = {
+    text: '<input type="text" v-bind="attrs" v-model="value">',
+    textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
+    radio: `<template v-for="option in options | options">
                     <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>
                  </template>`,
-    checkbox:   '<input type="checkbox" v-bind="attrs" v-model="value">',
-    select:     `<select v-bind="attrs" v-model="value">
+    checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
+    select: `<select v-bind="attrs" v-model="value">
                      <template v-for="option in options | options">
                          <optgroup :label="option.label" v-if="option.label">
                              <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>
                          </optgroup>
                          <option :value="option.value" v-else>{{ option.text }}</option>
                      </template>
-                 </select>`
-};
-
-Fields.templates = {
-    default: Template
-};
-
-export const Mixin = {
-
-    created() {
-        this.$options.components.fields = Vue.extend(Fields(this.$options));
-    }
-
+                 </select>`,
+    range: '<input type="range" v-bind="attrs" v-model="value">',
+    number: '<input type="number" v-bind="attrs" v-model="value">'
 };

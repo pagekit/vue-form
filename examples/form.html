@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Form</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js"></script>
+        <script src="../dist/vue-form.js"></script>
+    </head>
+    <body>
+
+        <div id="app" class="container">
+
+            <h1>Form</h1>
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading"><h2 class="panel-title">Regular Fields</h2></div>
+
+                <fields class="panel-body" :config="fields" :values="values"></fields>
+
+            </div>
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading"><h2 class="panel-title">Custom Fields</h2></div>
+
+                <custom-fields class="panel-body" :config="fields" :values="values"></custom-fields>
+
+            </div>
+
+            <pre>{{ values | json }}</pre>
+
+        </div>
+
+        <script>
+
+            new Vue({
+
+                el: '#app',
+
+                data: {
+
+                    fields: {
+
+                        text: {
+                            label: 'Text',
+                            type: 'text'
+                        },
+
+                        textarea: {
+                            label: 'Textarea',
+                            type: 'textarea'
+                        },
+
+                        select: {
+                            label: 'Select',
+                            type: 'select',
+                            default: 1,
+                            options: {
+                                one: 1,
+                                two: 2,
+                                three: 3
+                            }
+                        },
+
+                        number: {
+                            label: 'Number',
+                            type: 'number'
+                        },
+
+                        custom: {
+
+                            label: 'Custom',
+                            type: 'custom'
+
+                        }
+
+                    },
+
+                    values: {}
+
+                },
+
+                components: {
+
+                    customFields: {
+
+                        extends: Vue.component('fields'),
+
+                        template: `<div>
+
+                                        <div class="form-group" v-for="field in fields">
+                                            <label v-if="field.type != 'checkbox'">{{ field.label }}</label>
+                                            <component class="form-control" :is="field.type" :field="field"></component>
+                                        </div>
+
+                                    </div>`,
+
+                        fields: {
+
+                            number: '<input style="border: 1px solid red" type="number" v-bind="attrs" v-model="value">',
+
+                            custom: {
+
+                                template: '<input style="border: 1px solid red" type="text" v-bind="attrs" v-model="value">'
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        </script>
+
+    </body>
+</html>

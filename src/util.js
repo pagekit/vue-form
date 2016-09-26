@@ -30,11 +30,11 @@ export function isUndefined(val) {
 }
 
 export function on(el, event, cb, useCapture) {
-    el.addEventListener(event, cb, useCapture)
+    el.addEventListener(event, cb, useCapture);
 }
 
-export function off(el, event, cb) {
-    el.removeEventListener(event, cb)
+export function off(el, event, cb, useCapture) {
+    el.removeEventListener(event, cb, useCapture);
 }
 
 export function attr(el, attr) {

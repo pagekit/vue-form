@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.1.0
+ * vue-form v0.3.0
  * Released under the MIT License.
  */
 
@@ -60,8 +60,8 @@ function on(el, event, cb, useCapture) {
     el.addEventListener(event, cb, useCapture);
 }
 
-function off(el, event, cb) {
-    el.removeEventListener(event, cb);
+function off(el, event, cb, useCapture) {
+    el.removeEventListener(event, cb, useCapture);
 }
 
 function attr(el, attr) {
@@ -103,109 +103,88 @@ function each(obj, iterator) {
     return obj;
 }
 
-function Field (types) {
+var Field = {
 
-    var Field = {
+    name: 'field',
 
-        name: 'field',
+    props: ['field'],
 
-        props: ['config', 'values', 'class'],
+    data: function data() {
+        return _extends({
+            key: '',
+            name: '',
+            type: 'text',
+            label: '',
+            attrs: {},
+            options: [],
+            default: undefined
+        }, this.field);
+    },
+    created: function created() {
 
-        template: '<partial :name="type"></partial>',
-
-        data: function data() {
-            return _extends({
-                key: '',
-                name: '',
-                type: 'text',
-                label: '',
-                attrs: {},
-                options: [],
-                default: undefined
-            }, this.config);
-        },
-        created: function created() {
-            this.$set('key', '["' + this.name.replace(/\./g, '"]["') + '"]');
-        },
+        this.key = '["' + this.name.replace(/\./g, '"]["') + '"]';
+    },
 
 
-        computed: {
+    computed: {
 
-            value: {
-                get: function get() {
+        value: {
+            get: function get() {
 
-                    var value = this.$get('values' + this.key);
+                var value = this.$parent.getField(this);
 
-                    if (isUndefined(value) && !isUndefined(this.default)) {
-                        if (value = this.default) {
-                            this.$set('values' + this.key, value);
-                        }
+                if (isUndefined(value) && !isUndefined(this.default)) {
+                    if (value = this.default) {
+                        this.$parent.setField(this, value);
                     }
+                }
 
-                    return value;
-                },
-                set: function set(value) {
+                return value;
+            },
+            set: function set(value) {
 
-                    if (!isUndefined(this.value) || value) {
-                        this.$set('values' + this.key, value);
-                    }
+                if (!isUndefined(this.value) || value) {
+                    this.$parent.setField(this, value);
                 }
             }
+        }
 
-        },
+    },
 
-        methods: {
-            filterOptions: function filterOptions(options) {
-                var _this = this;
+    methods: {
+        filterOptions: function filterOptions(options) {
+            var _this = this;
 
-                var opts = [];
+            var opts = [];
 
-                if (!options) {
-                    warn('Invalid options provided for ' + this.name);
-                    return opts;
-                }
-
-                each(options, function (value, name) {
-                    if (isObject(value)) {
-                        opts.push({ label: name, options: _this.filterOptions(value) });
-                    } else {
-                        opts.push({ text: name, value: value });
-                    }
-                });
-
+            if (!options) {
+                warn('Invalid options provided for ' + this.name);
                 return opts;
             }
-        },
 
-        filters: {
-            options: function options(_options) {
-                return this.filterOptions(_options);
-            }
-        },
+            each(options, function (value, name) {
+                if (isObject(value)) {
+                    opts.push({ label: name, options: _this.filterOptions(value) });
+                } else {
+                    opts.push({ text: name, value: value });
+                }
+            });
 
-        partials: {},
-
-        components: {}
-
-    };
-
-    each(types, function (type, name) {
-        if (isString(type)) {
-            Field.partials[name] = type;
-        } else if (isObject(type)) {
-            Field.partials[name] = '<component :is="type" :config="config" :value.sync="value"></component>';
-            Field.components[name] = function (resolve) {
-                resolve(type);
-            };
+            return opts;
         }
-    });
+    },
 
-    return Field;
-}
+    filters: {
+        options: function options(_options) {
+            return this.filterOptions(_options);
+        }
+    }
 
-var Template = "<div v-for=\"field in fields\">\n    <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n    <field :config=\"field\" :values.sync=\"values\"></field>\n</div>\n";
+};
 
-function Fields(options) {
+var template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :field=\"field\"></component>\n    </div>\n\n</div>\n";
+
+function Fields (Vue) {
 
     return {
 
@@ -214,120 +193,108 @@ function Fields(options) {
         props: {
 
             config: {
-                default: ''
+                type: [Array, Object],
+                default: function _default() {
+                    return [];
+                }
             },
 
-            model: {
-                default: ''
-            },
-
-            template: {
-                type: String,
-                default: 'default'
+            values: {
+                type: Object
             }
 
         },
 
         created: function created() {
+            var _$options = this.$options;
+            var fields = _$options.fields;
+            var components = _$options.components;
 
-            if (!this.fields || !this.values) {
+
+            if (!this.fields.length || !this.values) {
                 warn('Invalid config or model provided');
-                this.$options.template = '';
                 return;
             }
 
-            if (!this.$options.template) {
-                this.$options.template = Fields.templates[this.template];
-            }
+            each(_extends({}, Vue.fields, fields), function (type, name) {
+
+                if (isString(type)) {
+                    type = { template: type };
+                }
+
+                if (isObject(type)) {
+                    type.name = type.name || 'field-' + name;
+                    type = Vue.extend(Field).extend(type);
+                }
+
+                components[name] = type;
+            });
         },
 
 
         computed: {
             fields: function fields() {
-
-                var vm = this;
-
-                if (isObject(this.config)) {
-                    return this.filterFields(this.config);
-                }
-
-                do {
-
-                    if (isObject(vm.$options[this.config])) {
-                        return this.filterFields(vm.$options[this.config]);
-                    }
-
-                    vm = vm.$parent;
-                } while (vm);
-            },
-            values: function values() {
-
-                var vm = this;
-
-                if (isObject(this.model)) {
-                    return this.model;
-                }
-
-                do {
-
-                    if (isObject(vm.$get(this.model))) {
-                        return vm.$get(this.model);
-                    }
-
-                    vm = vm.$parent;
-                } while (vm);
+                return this.filterFields(this.config);
             }
         },
 
         methods: {
-            filterFields: function filterFields(fields) {
+            getField: function getField(_ref) {
+                var key = _ref.key;
+
+                return this.$get('values' + key);
+            },
+            setField: function setField(_ref2, value) {
+                var key = _ref2.key;
+
+                this.$set('values' + key, value);
+            },
+            filterFields: function filterFields(config) {
                 var _this = this;
 
-                var arr = isArray(fields),
-                    flds = [];
+                var arr = isArray(config),
+                    fields = [];
 
-                each(fields, function (field, name) {
+                each(config, function (field, name) {
 
                     if (!isString(field.name) && !arr) {
                         field.name = name;
                     }
 
+                    if (!isString(field.type)) {
+                        field.type = 'text';
+                    }
+
                     if (isString(field.name)) {
                         if (!field.show || new Vue({ data: _this.values }).$eval(field.show)) {
-                            flds.push(field);
+                            fields.push(field);
                         }
                     } else {
                         warn('Field name missing ' + JSON.stringify(field));
                     }
                 });
 
-                return flds;
+                return fields;
             }
         },
 
-        components: {
-            field: Field(_extends(options.fields || {}, Fields.types))
-        }
+        fields: {},
+
+        components: {},
+
+        template: template
 
     };
-}
+};
 
-Fields.types = {
+var fields = {
     text: '<input type="text" v-bind="attrs" v-model="value">',
     textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
     radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
     checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-    select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>'
-};
-
-Fields.templates = {
-    default: Template
-};
-
-var Mixin = {
-    created: function created() {
-        this.$options.components.fields = Vue.extend(Fields(this.$options));
-    }
+    select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>',
+    range: '<input type="range" v-bind="attrs" v-model="value">',
+    number: '<input type="number" v-bind="attrs" v-model="value">'
 };
 
 /**
@@ -634,13 +601,15 @@ function plugin(Vue) {
 
     Util(Vue);
 
-    Vue.field = Fields;
-    Vue.mixin(Mixin);
+    Vue.fields = fields;
+    Vue.component('fields', Fields(Vue));
 
     Vue.validator = Validator;
     Vue.filter('valid', Filter);
     Vue.directive('validator', Directive);
     Vue.directive('validate', Validate);
+
+    Vue.config.optionMergeStrategies.fields = Vue.config.optionMergeStrategies.props;
 }
 
 if (typeof window !== 'undefined' && window.Vue) {
