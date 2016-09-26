@@ -1,5 +1,5 @@
 import Field from './field';
-import Template from './templates/default.html';
+import template from './templates/default.html';
 import { each, warn, isArray, isObject, isString } from './util';
 
 export default function (Vue) {
@@ -98,7 +98,7 @@ export default function (Vue) {
 
         components: {},
 
-        template: Template
+        template
 
     }
 
