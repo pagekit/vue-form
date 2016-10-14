@@ -134,9 +134,10 @@ var Field = {
                 var value = this.$parent.getField(this);
 
                 if (isUndefined(value) && !isUndefined(this.default)) {
-                    if (value = this.default) {
-                        this.$parent.setField(this, value);
+                    if (this.default) {
+                        this.$parent.setField(this, this.default, value);
                     }
+                    return this.default;
                 }
 
                 return value;
@@ -144,7 +145,7 @@ var Field = {
             set: function set(value) {
 
                 if (!isUndefined(this.value) || value) {
-                    this.$parent.setField(this, value);
+                    this.$parent.setField(this, value, this.value);
                 }
             }
         }
@@ -244,7 +245,7 @@ function Fields (Vue) {
 
                 return this.$get('values' + key);
             },
-            setField: function setField(_ref2, value) {
+            setField: function setField(_ref2, value, prev) {
                 var key = _ref2.key;
 
                 this.$set('values' + key, value);

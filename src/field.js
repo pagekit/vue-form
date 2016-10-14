@@ -33,9 +33,10 @@ export default {
                 var value = this.$parent.getField(this);
 
                 if (isUndefined(value) && !isUndefined(this.default)) {
-                    if (value = this.default) {
-                        this.$parent.setField(this, value);
+                    if (this.default) {
+                        this.$parent.setField(this, this.default, value);
                     }
+                    return this.default
                 }
 
                 return value;
@@ -44,7 +45,7 @@ export default {
             set(value) {
 
                 if (!isUndefined(this.value) || value) {
-                    this.$parent.setField(this, value);
+                    this.$parent.setField(this, value, this.value);
                 }
 
             }
