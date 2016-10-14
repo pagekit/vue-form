@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.0
+ * vue-form v0.3.1
  * Released under the MIT License.
  */
 
