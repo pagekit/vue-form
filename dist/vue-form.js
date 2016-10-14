@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.0
+ * vue-form v0.3.1
  * Released under the MIT License.
  */
 
@@ -111,7 +111,7 @@
 
       name: 'field',
 
-      props: ['field'],
+      props: ['field', 'class'],
 
       data: function data() {
           return _extends({
@@ -138,8 +138,9 @@
                   var value = this.$parent.getField(this);
 
                   if (isUndefined(value) && !isUndefined(this.default)) {
-                      if (value = this.default) {
-                          this.$parent.setField(this, value);
+                      if (this.default) {
+                          this.$parent.setField(this, this.default, value);
+                          return this.default;
                       }
                   }
 
@@ -148,7 +149,7 @@
               set: function set(value) {
 
                   if (!isUndefined(this.value) || value) {
-                      this.$parent.setField(this, value);
+                      this.$parent.setField(this, value, this.value);
                   }
               }
           }
@@ -248,7 +249,7 @@
 
                   return this.$get('values' + key);
               },
-              setField: function setField(_ref2, value) {
+              setField: function setField(_ref2, value, prev) {
                   var key = _ref2.key;
 
                   this.$set('values' + key, value);

@@ -62,7 +62,7 @@ export default function (Vue) {
                 return this.$get(`values${key}`);
             },
 
-            setField({key}, value) {
+            setField({key}, value, prev) {
                 this.$set(`values${key}`, value);
             },
 
