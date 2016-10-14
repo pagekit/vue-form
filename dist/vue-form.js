@@ -140,8 +140,8 @@
                   if (isUndefined(value) && !isUndefined(this.default)) {
                       if (this.default) {
                           this.$parent.setField(this, this.default, value);
+                          return this.default;
                       }
-                      return this.default;
                   }
 
                   return value;
