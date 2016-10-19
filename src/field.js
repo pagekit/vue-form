@@ -33,9 +33,11 @@ export default {
                 var value = this.$parent.getField(this);
 
                 if (isUndefined(value) && !isUndefined(this.default)) {
-                    if (this.default) {
-                        this.$parent.setField(this, this.default, value);
-                        return this.default
+
+                    value = this.default;
+
+                    if (value) {
+                        this.$parent.setField(this, value);
                     }
                 }
 
