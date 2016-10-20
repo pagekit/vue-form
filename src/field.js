@@ -28,6 +28,8 @@ export default {
 
         value: {
 
+            cache: false,
+
             get() {
 
                 var value = this.$parent.getField(this);
