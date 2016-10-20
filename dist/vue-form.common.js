@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.2
+ * vue-form v0.3.3
  * Released under the MIT License.
  */
 
@@ -129,6 +129,9 @@ var Field = {
     computed: {
 
         value: {
+
+            cache: false,
+
             get: function get() {
 
                 var value = this.$parent.getField(this);
