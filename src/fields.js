@@ -58,12 +58,23 @@ export default function (Vue) {
 
         methods: {
 
-            getField({key}) {
-                return this.$get(`values${key}`);
+            getField(field) {
+
+                if (this.values instanceof Vue && 'getField' in this.values) {
+                    return this.values.getField(field);
+                }
+
+                return this.$get(`values${field.key}`);
             },
 
-            setField({key}, value, prev) {
-                this.$set(`values${key}`, value);
+            setField(field, value, prev) {
+
+                if (this.values instanceof Vue && 'setField' in this.values) {
+                    this.values.setField(field, value, prev);
+                } else {
+                    this.$set(`values${field.key}`, value);
+                }
+
             },
 
             filterFields(config) {

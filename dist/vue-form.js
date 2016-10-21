@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.3
+ * vue-form v0.3.4
  * Released under the MIT License.
  */
 
@@ -249,15 +249,21 @@
           },
 
           methods: {
-              getField: function getField(_ref) {
-                  var key = _ref.key;
+              getField: function getField(field) {
 
-                  return this.$get('values' + key);
+                  if (this.values instanceof Vue && 'getField' in this.values) {
+                      return this.values.getField(field);
+                  }
+
+                  return this.$get('values' + field.key);
               },
-              setField: function setField(_ref2, value, prev) {
-                  var key = _ref2.key;
+              setField: function setField(field, value, prev) {
 
-                  this.$set('values' + key, value);
+                  if (this.values instanceof Vue && 'setField' in this.values) {
+                      this.values.setField(field, value, prev);
+                  } else {
+                      this.$set('values' + field.key, value);
+                  }
               },
               filterFields: function filterFields(config) {
                   var _this = this;
