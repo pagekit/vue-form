@@ -71,9 +71,10 @@ export default function (Vue) {
 
                 if (this.values instanceof Vue && 'setField' in this.values) {
                     this.values.setField(field, value, prev);
+                } else {
+                    this.$set(`values${field.key}`, value);
                 }
 
-                this.$set(`values${field.key}`, value);
             },
 
             filterFields(config) {
