@@ -27,7 +27,7 @@ export default function (Vue) {
 
             var {fields, components} = this.$options;
 
-            if (!this.fields.length || !this.values) {
+            if (!Object.keys(this.config).length || !this.values) {
                 warn('Invalid config or model provided');
                 return;
             }

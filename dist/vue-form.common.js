@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.4
+ * vue-form v0.3.5
  * Released under the MIT License.
  */
 
@@ -217,7 +217,7 @@ function Fields (Vue) {
             var components = _$options.components;
 
 
-            if (!this.fields.length || !this.values) {
+            if (!Object.keys(this.config).length || !this.values) {
                 warn('Invalid config or model provided');
                 return;
             }
