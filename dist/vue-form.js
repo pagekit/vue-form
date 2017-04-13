@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.6
+ * vue-form v0.3.7
  * Released under the MIT License.
  */
 
@@ -282,7 +282,7 @@
                       }
 
                       if (isString(field.name)) {
-                          if (!field.show || new Vue({ data: _this.values }).$eval(field.show)) {
+                          if (!field.show || evalShow(field.show, _this.values)) {
                               fields.push(field);
                           }
                       } else {
@@ -301,6 +301,15 @@
           template: template
 
       };
+
+      function evalShow(show, data) {
+          var comp = new Vue({ data: data });
+          var result = comp.$eval(show);
+
+          comp.$destroy();
+
+          return result;
+      }
   };
 
   var fields = {
