@@ -91,7 +91,7 @@ export default function (Vue) {
                     }
 
                     if (isString(field.name)) {
-                        if (!field.show || (new Vue({data: this.values})).$eval(field.show)) {
+                        if (!field.show || evalShow(field.show, this.values)) {
                             fields.push(field);
                         }
                     } else {
@@ -111,6 +111,15 @@ export default function (Vue) {
 
         template
 
+    };
+
+    function evalShow(show, data) {
+        var comp = new Vue({data});
+        var result = comp.$eval(show);
+
+        comp.$destroy();
+
+        return result;
     }
 
 };
