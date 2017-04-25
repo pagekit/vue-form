@@ -1,6 +1,6 @@
 import Field from './field';
 import template from './templates/default.html';
-import { each, warn, isArray, isObject, isString } from './util';
+import { get, each, warn, assign, isArray, isObject, isString } from './util';
 
 export default function (Vue) {
 
@@ -32,7 +32,7 @@ export default function (Vue) {
                 return;
             }
 
-            each(Object.assign({}, Vue.fields, fields), (type, name) => {
+            each(assign({}, Vue.fields, fields), (type, name) => {
 
                 if (isString(type)) {
                     type = {template: type};
@@ -64,7 +64,7 @@ export default function (Vue) {
                     return this.values.getField(field);
                 }
 
-                return this.$get(`values${field.key}`);
+                return get(this.values, field.name);
             },
 
             setField(field, value, prev) {
@@ -72,12 +72,13 @@ export default function (Vue) {
                 if (this.values instanceof Vue && 'setField' in this.values) {
                     this.values.setField(field, value, prev);
                 } else {
-                    this.$set(`values${field.key}`, value);
+                    Vue.set(this.values, field.name, value);
                 }
 
             },
 
             filterFields(config) {
+
                 var arr = isArray(config), fields = [];
 
                 each(config, (field, name) => {
@@ -114,6 +115,7 @@ export default function (Vue) {
     };
 
     function evalShow(show, data) {
+
         var comp = new Vue({data});
         var result = comp.$eval(show);
 

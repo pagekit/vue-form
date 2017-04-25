@@ -1,4 +1,4 @@
-import { each, warn, isObject, isUndefined} from './util';
+import { each, warn, assign, isObject, isUndefined} from './util';
 
 export default {
 
@@ -7,8 +7,7 @@ export default {
     props: ['field', 'class'],
 
     data() {
-        return Object.assign({
-            key: '',
+        return assign({
             name: '',
             type: 'text',
             label: '',
@@ -18,17 +17,9 @@ export default {
         }, this.field);
     },
 
-    created() {
-
-        this.key = `["${this.name.replace(/\./g, '"]["')}"]`;
-
-    },
-
     computed: {
 
         value: {
-
-            cache: false,
 
             get() {
 
@@ -52,7 +43,9 @@ export default {
                     this.$parent.setField(this, value, this.value);
                 }
 
-            }
+            },
+
+            cache: false
 
         }
 
