@@ -19,6 +19,20 @@ export default {
 
     computed: {
 
+        attrs: {
+
+            get() {
+
+                if (this.disabled && this.$parent.evaluate(this.disabled)) {
+                    return assign({disabled: 'true'}, this.$data.attrs);
+                }
+
+                return this.$data.attrs;
+            },
+
+            cache: false
+        },
+
         value: {
 
             get() {
@@ -46,7 +60,6 @@ export default {
             },
 
             cache: false
-
         }
 
     },

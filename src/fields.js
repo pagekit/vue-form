@@ -92,9 +92,11 @@ export default function (Vue) {
                     }
 
                     if (isString(field.name)) {
-                        if (!field.show || evalShow(field.show, this.values)) {
+
+                        if (!field.show || this.evaluate(field.show)) {
                             fields.push(field);
                         }
+
                     } else {
                         warn(`Field name missing ${JSON.stringify(field)}`);
                     }
@@ -102,6 +104,18 @@ export default function (Vue) {
                 });
 
                 return fields;
+            },
+
+            evaluate(expr, data) {
+
+                data = data || this.values;
+
+                var comp = new Vue({data});
+                var result = comp.$eval(expr);
+
+                comp.$destroy();
+
+                return result;
             }
 
         },
@@ -113,16 +127,6 @@ export default function (Vue) {
         template
 
     };
-
-    function evalShow(show, data) {
-
-        var comp = new Vue({data});
-        var result = comp.$eval(show);
-
-        comp.$destroy();
-
-        return result;
-    }
 
 };
 
