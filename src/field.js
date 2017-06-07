@@ -17,6 +17,12 @@ export default {
         }, this.field);
     },
 
+    created() {
+
+        this.key = `["${this.name.replace(/\./g, '"]["')}"]`;
+
+    },
+
     computed: {
 
         attrs: {

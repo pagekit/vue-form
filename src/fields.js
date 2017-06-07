@@ -1,6 +1,6 @@
 import Field from './field';
 import template from './templates/default.html';
-import { get, each, warn, assign, isArray, isObject, isString } from './util';
+import { each, warn, assign, isArray, isObject, isString } from './util';
 
 export default function (Vue) {
 
@@ -64,7 +64,7 @@ export default function (Vue) {
                     return this.values.getField(field);
                 }
 
-                return get(this.values, field.name);
+                return this.$get(`values${field.key}`);
             },
 
             setField(field, value, prev) {
@@ -72,7 +72,7 @@ export default function (Vue) {
                 if (this.values instanceof Vue && 'setField' in this.values) {
                     this.values.setField(field, value, prev);
                 } else {
-                    Vue.set(this.values, field.name, value);
+                    this.$set(`values${field.key}`, value);
                 }
 
             },
