@@ -1,7 +1,7 @@
 var fs = require('fs');
 var rollup = require('rollup');
 var uglify = require('uglify-js');
-var babel = require('rollup-plugin-babel');
+var buble = require('rollup-plugin-buble');
 var string = require('rollup-plugin-string');
 var package = require('./package.json');
 var version = process.env.VERSION || package.version;
@@ -13,10 +13,7 @@ var banner =
 
 rollup.rollup({
   entry: 'src/index.js',
-  plugins: [
-    string({ include: 'src/**/*.html' }),
-    babel({ presets: ['es2015-rollup'], plugins: ['transform-object-assign'] })
-  ]
+  plugins: [string({ include: 'src/**/*.html' }), buble()]
 })
 .then(function (bundle) {
   return write('dist/vue-form.js', bundle.generate({

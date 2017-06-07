@@ -1,29 +1,9 @@
 /*!
- * vue-form v0.3.7
+ * vue-form v0.3.8
  * Released under the MIT License.
  */
 
 'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
 
 /**
  * Utility functions.
@@ -31,16 +11,17 @@ var _extends = Object.assign || function (target) {
 
 var debug = false;
 var util = {};
+
 var isArray = Array.isArray;
 
-function Util (Vue) {
+var Util = function (Vue) {
     util = Vue.util;
     debug = Vue.config.debug || !Vue.config.silent;
-}
+};
 
 function warn(msg) {
     if (typeof console !== 'undefined' && debug) {
-        console.warn('[VueForm warn]: ' + msg);
+        console.warn(("[VueForm warn]: " + msg));
     }
 }
 
@@ -49,7 +30,7 @@ function isString(val) {
 }
 
 function isObject(obj) {
-    return obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object';
+    return obj !== null && typeof obj === 'object';
 }
 
 function isUndefined(val) {
@@ -84,6 +65,8 @@ function pull(arr, value) {
     arr.splice(arr.indexOf(value), 1);
 }
 
+
+
 function each(obj, iterator) {
 
     var i, key;
@@ -103,6 +86,24 @@ function each(obj, iterator) {
     return obj;
 }
 
+var assign = Object.assign || function (target) {
+    var arguments$1 = arguments;
+
+
+    for (var i = 1; i < arguments.length; i++) {
+
+        var source = arguments$1[i];
+
+        for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+
+    return target;
+};
+
 var Field = {
 
     name: 'field',
@@ -110,8 +111,7 @@ var Field = {
     props: ['field', 'class'],
 
     data: function data() {
-        return _extends({
-            key: '',
+        return assign({
             name: '',
             type: 'text',
             label: '',
@@ -120,19 +120,32 @@ var Field = {
             default: undefined
         }, this.field);
     },
+
     created: function created() {
 
-        this.key = '["' + this.name.replace(/\./g, '"]["') + '"]';
-    },
+        this.key = "[\"" + (this.name.replace(/\./g, '"]["')) + "\"]";
 
+    },
 
     computed: {
 
+        attrs: {
+
+            get: function get$$1() {
+
+                if (this.disabled && this.$parent.evaluate(this.disabled)) {
+                    return assign({disabled: 'true'}, this.$data.attrs);
+                }
+
+                return this.$data.attrs;
+            },
+
+            cache: false
+        },
+
         value: {
 
-            cache: false,
-
-            get: function get() {
+            get: function get$$1() {
 
                 var value = this.$parent.getField(this);
 
@@ -147,50 +160,59 @@ var Field = {
 
                 return value;
             },
+
             set: function set(value) {
 
                 if (!isUndefined(this.value) || value) {
                     this.$parent.setField(this, value, this.value);
                 }
-            }
+
+            },
+
+            cache: false
         }
 
     },
 
     methods: {
+
         filterOptions: function filterOptions(options) {
-            var _this = this;
+            var this$1 = this;
+
 
             var opts = [];
 
             if (!options) {
-                warn('Invalid options provided for ' + this.name);
+                warn(("Invalid options provided for " + (this.name)));
                 return opts;
             }
 
             each(options, function (value, name) {
                 if (isObject(value)) {
-                    opts.push({ label: name, options: _this.filterOptions(value) });
+                    opts.push({label: name, options: this$1.filterOptions(value)});
                 } else {
-                    opts.push({ text: name, value: value });
+                    opts.push({text: name, value: value});
                 }
             });
 
             return opts;
         }
+
     },
 
     filters: {
-        options: function options(_options) {
-            return this.filterOptions(_options);
+
+        options: function options(options$1) {
+            return this.filterOptions(options$1);
         }
+
     }
 
 };
 
 var template = "<div>\n\n    <div v-for=\"field in fields\">\n        <label v-if=\"field.type != 'checkbox'\">{{ field.label }}</label>\n        <component :is=\"field.type\" :field=\"field\"></component>\n    </div>\n\n</div>\n";
 
-function Fields (Vue) {
+var Fields = function (Vue) {
 
     return {
 
@@ -200,7 +222,7 @@ function Fields (Vue) {
 
             config: {
                 type: [Array, Object],
-                default: function _default() {
+                default: function default$1() {
                     return [];
                 }
             },
@@ -212,60 +234,66 @@ function Fields (Vue) {
         },
 
         created: function created() {
-            var _$options = this.$options;
-            var fields = _$options.fields;
-            var components = _$options.components;
 
+            var ref = this.$options;
+            var fields = ref.fields;
+            var components = ref.components;
 
             if (!this.fields || !this.values) {
                 warn('Invalid config or model provided');
                 return;
             }
 
-            each(_extends({}, Vue.fields, fields), function (type, name) {
+            each(assign({}, Vue.fields, fields), function (type, name) {
 
                 if (isString(type)) {
-                    type = { template: type };
+                    type = {template: type};
                 }
 
                 if (isObject(type)) {
-                    type.name = type.name || 'field-' + name;
+                    type.name = type.name || ("field-" + name);
                     type = Vue.extend(Field).extend(type);
                 }
 
                 components[name] = type;
             });
+
         },
 
-
         computed: {
+
             fields: function fields() {
                 return this.filterFields(this.config);
             }
+
         },
 
         methods: {
+
             getField: function getField(field) {
 
                 if (this.values instanceof Vue && 'getField' in this.values) {
                     return this.values.getField(field);
                 }
 
-                return this.$get('values' + field.key);
+                return this.$get(("values" + (field.key)));
             },
+
             setField: function setField(field, value, prev) {
 
                 if (this.values instanceof Vue && 'setField' in this.values) {
                     this.values.setField(field, value, prev);
                 } else {
-                    this.$set('values' + field.key, value);
+                    this.$set(("values" + (field.key)), value);
                 }
-            },
-            filterFields: function filterFields(config) {
-                var _this = this;
 
-                var arr = isArray(config),
-                    fields = [];
+            },
+
+            filterFields: function filterFields(config) {
+                var this$1 = this;
+
+
+                var arr = isArray(config), fields = [];
 
                 each(config, function (field, name) {
 
@@ -278,16 +306,32 @@ function Fields (Vue) {
                     }
 
                     if (isString(field.name)) {
-                        if (!field.show || evalShow(field.show, _this.values)) {
+
+                        if (!field.show || this$1.evaluate(field.show)) {
                             fields.push(field);
                         }
+
                     } else {
-                        warn('Field name missing ' + JSON.stringify(field));
+                        warn(("Field name missing " + (JSON.stringify(field))));
                     }
+
                 });
 
                 return fields;
+            },
+
+            evaluate: function evaluate(expr, data) {
+
+                data = data || this.values;
+
+                var comp = new Vue({data: data});
+                var result = comp.$eval(expr);
+
+                comp.$destroy();
+
+                return result;
             }
+
         },
 
         fields: {},
@@ -298,22 +342,14 @@ function Fields (Vue) {
 
     };
 
-    function evalShow(show, data) {
-        var comp = new Vue({ data: data });
-        var result = comp.$eval(show);
-
-        comp.$destroy();
-
-        return result;
-    }
 };
 
 var fields = {
     text: '<input type="text" v-bind="attrs" v-model="value">',
     textarea: '<textarea v-bind="attrs" v-model="value"></textarea>',
-    radio: '<template v-for="option in options | options">\n                    <input type="radio" v-bind="attrs" :name="name" :value="option.value" v-model="value"> <label>{{ option.text }}</label>\n                 </template>',
+    radio: "<template v-for=\"option in options | options\">\n                    <input type=\"radio\" v-bind=\"attrs\" :name=\"name\" :value=\"option.value\" v-model=\"value\"> <label>{{ option.text }}</label>\n                 </template>",
     checkbox: '<input type="checkbox" v-bind="attrs" v-model="value">',
-    select: '<select v-bind="attrs" v-model="value">\n                     <template v-for="option in options | options">\n                         <optgroup :label="option.label" v-if="option.label">\n                             <option v-for="opt in option.options" :value="opt.value">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value="option.value" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>',
+    select: "<select v-bind=\"attrs\" v-model=\"value\">\n                     <template v-for=\"option in options | options\">\n                         <optgroup :label=\"option.label\" v-if=\"option.label\">\n                             <option v-for=\"opt in option.options\" :value=\"opt.value\">{{ opt.text }}</option>\n                         </optgroup>\n                         <option :value=\"option.value\" v-else>{{ option.text }}</option>\n                     </template>\n                 </select>",
     range: '<input type="range" v-bind="attrs" v-model="value">',
     number: '<input type="number" v-bind="attrs" v-model="value">'
 };
@@ -332,42 +368,35 @@ function required(value, arg) {
         return !arg || value;
     }
 
-    return !arg || !(value === null || value.length === 0);
+    return !arg || !((value === null) || (value.length === 0));
 }
 
 function numeric(value) {
-    return (/^[-+]?[0-9]+$/.test(value)
-    );
+    return /^[-+]?[0-9]+$/.test(value);
 }
 
 function integer(value) {
-    return (/^(?:[-+]?(?:0|[1-9][0-9]*))$/.test(value)
-    );
+    return /^(?:[-+]?(?:0|[1-9][0-9]*))$/.test(value);
 }
 
 function float(value) {
-    return (/^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/.test(value)
-    );
+    return /^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/.test(value);
 }
 
 function alpha(value) {
-    return (/^([A-Z]+)?$/i.test(value)
-    );
+    return /^([A-Z]+)?$/i.test(value);
 }
 
 function alphanum(value) {
-    return (/^([0-9A-Z]+)?$/i.test(value)
-    );
+    return /^([0-9A-Z]+)?$/i.test(value);
 }
 
 function email(value) {
-    return (/^([a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*)?$/i.test(value || 'a@a.aa')
-    );
+    return /^([a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*)?$/i.test(value || 'a@a.aa');
 }
 
 function url(value) {
-    return (/^((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)?$/.test(value)
-    );
+    return /^((ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?)?$/.test(value);
 }
 
 function minlength(value, arg) {
@@ -396,22 +425,27 @@ function pattern(value, arg) {
     return regex.test(value);
 }
 
+
 var types = Object.freeze({
-    required: required,
-    numeric: numeric,
-    integer: integer,
-    float: float,
-    alpha: alpha,
-    alphanum: alphanum,
-    email: email,
-    url: url,
-    minlength: minlength,
-    maxlength: maxlength,
-    length: length,
-    min: min,
-    max: max,
-    pattern: pattern
+	required: required,
+	numeric: numeric,
+	integer: integer,
+	float: float,
+	alpha: alpha,
+	alphanum: alphanum,
+	email: email,
+	url: url,
+	minlength: minlength,
+	maxlength: maxlength,
+	length: length,
+	min: min,
+	max: max,
+	pattern: pattern
 });
+
+/**
+ * Validator for input validation.
+ */
 
 var Validator = {
 
@@ -422,9 +456,11 @@ var Validator = {
     add: function add(dir) {
         this.dirs.push(dir);
     },
+
     remove: function remove(dir) {
         pull(this.dirs, dir);
     },
+
     instance: function instance(el) {
 
         do {
@@ -434,13 +470,16 @@ var Validator = {
             }
 
             el = el.parentElement;
-        } while (el);
-    },
-    validate: function validate(el, submit) {
-        var _this = this;
 
-        var validator = this.instance(el),
-            results = { valid: true };
+        } while (el);
+
+    },
+
+    validate: function validate(el, submit) {
+        var this$1 = this;
+
+
+        var validator = this.instance(el), results = {valid: true};
 
         if (!validator) {
             return;
@@ -448,11 +487,9 @@ var Validator = {
 
         this.dirs.forEach(function (dir) {
 
-            var valid = dir.validate(),
-                el = dir.el,
-                name = dir.name;
+            var valid = dir.validate(), el = dir.el, name = dir.name;
 
-            if (_this.instance(el) !== validator) {
+            if (this$1.instance(el) !== validator) {
                 return;
             }
 
@@ -485,6 +522,7 @@ var Validator = {
                 results[name].invalid = true;
                 results.valid = false;
             }
+
         });
 
         results.invalid = !results.valid;
@@ -497,6 +535,7 @@ var Validator = {
 
         return results.valid;
     }
+
 };
 
 function Filter(fn) {
@@ -510,10 +549,10 @@ function Filter(fn) {
 }
 
 var Directive = {
+
     bind: function bind() {
 
-        var self = this,
-            name = this.arg || this.expression;
+        var self = this, name = this.arg || this.expression;
 
         this.name = camelize(name);
         this.el._validator = this;
@@ -523,18 +562,26 @@ var Directive = {
             Validator.validate(self.el);
         });
     },
+
     unbind: function unbind() {
         this.vm.$delete(this.name);
     },
-    results: function results(_results) {
-        this.vm.$set(this.name, _extends({
+
+    results: function results(results$1) {
+        this.vm.$set(this.name, assign({
             validate: this.validate.bind(this)
-        }, _results));
+        }, results$1));
     },
+
     validate: function validate() {
         return Validator.validate(this.el, true);
     }
+
 };
+
+/**
+ * Validate directive.
+ */
 
 var Validate = {
 
@@ -560,6 +607,7 @@ var Validate = {
 
         Validator.add(this);
     },
+
     unbind: function unbind() {
 
         off(this.el, 'blur', this.listener);
@@ -567,9 +615,11 @@ var Validate = {
 
         Validator.remove(this);
     },
+
     update: function update(value) {
         this.args = value;
     },
+
     listener: function listener(e) {
 
         if (e.relatedTarget && (e.relatedTarget.tagName === 'A' || e.relatedTarget.tagName === 'BUTTON')) {
@@ -586,6 +636,7 @@ var Validate = {
 
         Validator.validate(this.el);
     },
+
     validate: function validate() {
 
         var validator = this.validator();
@@ -594,25 +645,33 @@ var Validate = {
             return validator.call(this.vm, this.el.value, this.args);
         }
     },
-    validator: function validator() {
 
-        var vm = this.vm,
-            validators;
+    validator: function validator() {
+        var this$1 = this;
+
+
+        var vm = this.vm, validators;
 
         do {
 
             validators = vm.$options.validators || {};
 
-            if (validators[this.type]) {
-                return validators[this.type];
+            if (validators[this$1.type]) {
+                return validators[this$1.type];
             }
 
             vm = vm.$parent;
+
         } while (vm);
 
         return Validator.types[this.type];
     }
+
 };
+
+/**
+ * Install plugin.
+ */
 
 function plugin(Vue) {
 
@@ -631,6 +690,7 @@ function plugin(Vue) {
     Vue.directive('validate', Validate);
 
     Vue.config.optionMergeStrategies.fields = Vue.config.optionMergeStrategies.props;
+
 }
 
 if (typeof window !== 'undefined' && window.Vue) {

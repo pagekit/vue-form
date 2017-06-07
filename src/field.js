@@ -1,4 +1,4 @@
-import { each, warn, isObject, isUndefined} from './util';
+import { each, warn, assign, isObject, isUndefined} from './util';
 
 export default {
 
@@ -7,8 +7,7 @@ export default {
     props: ['field', 'class'],
 
     data() {
-        return Object.assign({
-            key: '',
+        return assign({
             name: '',
             type: 'text',
             label: '',
@@ -26,9 +25,21 @@ export default {
 
     computed: {
 
-        value: {
+        attrs: {
 
-            cache: false,
+            get() {
+
+                if (this.disabled && this.$parent.evaluate(this.disabled)) {
+                    return assign({disabled: 'true'}, this.$data.attrs);
+                }
+
+                return this.$data.attrs;
+            },
+
+            cache: false
+        },
+
+        value: {
 
             get() {
 
@@ -52,8 +63,9 @@ export default {
                     this.$parent.setField(this, value, this.value);
                 }
 
-            }
+            },
 
+            cache: false
         }
 
     },

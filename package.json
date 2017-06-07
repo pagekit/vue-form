@@ -1,6 +1,6 @@
 {
   "name": "vue-form",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "A form generator for Vue.js",
   "main": "dist/vue-form.common.js",
   "keywords": [
@@ -10,11 +10,11 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "babel-plugin-transform-object-assign": "^6.8.0",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "rollup": "^0.31.1",
-    "rollup-plugin-babel": "^2.5.1",
-    "rollup-plugin-string": "^2.0.0",
-    "uglify-js": "^2.6.2"
+    "buble": "^0.15.2",
+    "buble-loader": "^0.4.1",
+    "rollup": "^0.42.0",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-string": "^2.0.2",
+    "uglify-js": "^2.8.22"
   }
 }

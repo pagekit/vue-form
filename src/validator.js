@@ -3,7 +3,7 @@
  */
 
 import * as types from './validators';
-import { camelize, pull, trigger } from './util';
+import { assign, camelize, pull, trigger } from './util';
 
 export const Validator = {
 
@@ -124,7 +124,7 @@ export const Directive = {
     },
 
     results(results) {
-        this.vm.$set(this.name, Object.assign({
+        this.vm.$set(this.name, assign({
             validate: this.validate.bind(this)
         }, results));
     },

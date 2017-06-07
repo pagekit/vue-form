@@ -57,6 +57,23 @@ export function pull(arr, value) {
     arr.splice(arr.indexOf(value), 1);
 }
 
+export function get(obj, path, def) {
+
+    path = path.replace(/\[(\w+)\]/g, '.$1');
+    path = path.replace(/^\./, '').split('.');
+
+    for (var i = 0, len = path.length; i < len; i++) {
+
+        if (!isObject(obj)) {
+            return def;
+        }
+
+        obj = obj[path[i]];
+    }
+
+    return isUndefined(obj) ? def : obj;
+}
+
 export function each(obj, iterator) {
 
     var i, key;
@@ -75,3 +92,19 @@ export function each(obj, iterator) {
 
     return obj;
 }
+
+export const assign = Object.assign || function (target) {
+
+    for (var i = 1; i < arguments.length; i++) {
+
+        var source = arguments[i];
+
+        for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+
+    return target;
+};
