@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.8
+ * vue-form v0.3.9
  * Released under the MIT License.
  */
 
@@ -133,7 +133,7 @@ var Field = {
 
             get: function get$$1() {
 
-                if (this.disabled && this.$parent.evaluate(this.disabled)) {
+                if (this.enable && !this.$parent.evaluate(this.enable)) {
                     return assign({disabled: 'true'}, this.$data.attrs);
                 }
 
