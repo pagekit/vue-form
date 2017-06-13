@@ -29,7 +29,7 @@ export default {
 
             get() {
 
-                if (this.disabled && this.$parent.evaluate(this.disabled)) {
+                if (this.enable && !this.$parent.evaluate(this.enable)) {
                     return assign({disabled: 'true'}, this.$data.attrs);
                 }
 
