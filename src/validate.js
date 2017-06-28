@@ -24,16 +24,6 @@ export var Validate = {
         this.el._dirty = false;
         this.el._touched = false;
 
-        //  RelatedTarget property dose not work in Safari, IE & Firefox
-        var handler = e => {
-            this.relatedTarget = e.target;
-            setTimeout(() => this.relatedTarget = null, 0);
-        };
-
-        on(document, 'mousedown', handler);
-        on(document, 'pointerdown', handler);
-        on(document, 'touchstart', handler);
-
         on(this.el, 'blur', this.listener.bind(this));
         on(this.el, 'input', this.listener.bind(this));
 
@@ -54,7 +44,7 @@ export var Validate = {
 
     listener(e) {
 
-        if (this.relatedTarget && (this.relatedTarget.tagName === 'A' || this.relatedTarget.tagName === 'BUTTON')) {
+        if (related.target && (related.target.tagName === 'A' || related.target.tagName === 'BUTTON')) {
             return;
         }
 
@@ -98,3 +88,16 @@ export var Validate = {
     }
 
 };
+
+//  RelatedTarget property dose not work in Safari, IE & Firefox
+const related = {
+    target: null,
+    handler ({target}) {
+        related.target = target;
+        setTimeout(() => related.target = null, 0);
+    }
+};
+
+on(document, 'mousedown', related.handler);
+on(document, 'pointerdown', related.handler);
+on(document, 'touchstart', related.handler);
