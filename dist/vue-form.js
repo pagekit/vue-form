@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.9
+ * vue-form v0.3.10
  * Released under the MIT License.
  */
 
@@ -626,7 +626,7 @@ var Validate = {
 
     listener: function listener(e) {
 
-        if (e.relatedTarget && (e.relatedTarget.tagName === 'A' || e.relatedTarget.tagName === 'BUTTON')) {
+        if (related.target && (related.target.tagName === 'A' || related.target.tagName === 'BUTTON')) {
             return;
         }
 
@@ -672,6 +672,21 @@ var Validate = {
     }
 
 };
+
+//  RelatedTarget property dose not work in Safari, IE & Firefox
+var related = {
+    target: null,
+    handler: function handler (ref) {
+        var target = ref.target;
+
+        related.target = target;
+        setTimeout(function () { return related.target = null; }, 0);
+    }
+};
+
+on(document, 'mousedown', related.handler);
+on(document, 'pointerdown', related.handler);
+on(document, 'touchstart', related.handler);
 
 /**
  * Install plugin.

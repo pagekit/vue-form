@@ -2,7 +2,7 @@
   "name": "vue-form",
   "main": "dist/vue-form.js",
   "description": "A form generator for Vue.js",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "homepage": "https://github.com/pagekit/vue-form",
   "license": "MIT",
   "ignore": [
