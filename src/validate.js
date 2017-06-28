@@ -44,7 +44,7 @@ export var Validate = {
 
     listener(e) {
 
-        if (e.relatedTarget && (e.relatedTarget.tagName === 'A' || e.relatedTarget.tagName === 'BUTTON')) {
+        if (related.target && (related.target.tagName === 'A' || related.target.tagName === 'BUTTON')) {
             return;
         }
 
@@ -88,3 +88,16 @@ export var Validate = {
     }
 
 };
+
+//  RelatedTarget property dose not work in Safari, IE & Firefox
+const related = {
+    target: null,
+    handler ({target}) {
+        related.target = target;
+        setTimeout(() => related.target = null, 0);
+    }
+};
+
+on(document, 'mousedown', related.handler);
+on(document, 'pointerdown', related.handler);
+on(document, 'touchstart', related.handler);
