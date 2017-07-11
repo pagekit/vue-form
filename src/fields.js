@@ -110,12 +110,17 @@ export default function (Vue) {
 
                 data = data || this.values;
 
-                var comp = new Vue({data});
-                var result = comp.$eval(expr);
+                if (isString(expr)) {
 
-                comp.$destroy();
+                    var comp = new Vue({data});
+                    var result = comp.$eval(expr);
 
-                return result;
+                    comp.$destroy();
+
+                    return result;
+                }
+
+                return expr.call(this, data);
             }
 
         },
