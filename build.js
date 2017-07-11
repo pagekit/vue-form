@@ -15,29 +15,33 @@ rollup.rollup({
   entry: 'src/index.js',
   plugins: [string({ include: 'src/**/*.html' }), buble()]
 })
-.then(function (bundle) {
-  return write('dist/vue-form.js', bundle.generate({
+.then(bundle =>
+  bundle.generate({
     format: 'umd',
     banner: banner,
     moduleName: 'VueForm'
-  }).code, bundle);
-})
-.then(function (bundle) {
-  return write('dist/vue-form.min.js',
-    banner + '\n' + uglify.minify('dist/vue-form.js').code,
-  bundle);
-})
-.then(function (bundle) {
-  return write('dist/vue-form.common.js', bundle.generate({
+  }).then(({code}) => write('dist/vue-form.js', code, bundle))
+)
+.then(bundle =>
+  write('dist/vue-form.min.js', banner + '\n' +
+    uglify.minify(read('dist/vue-form.js')).code,
+  bundle)
+)
+.then(bundle =>
+  bundle.generate({
     format: 'cjs',
     banner: banner
-  }).code, bundle);
-})
+  }).then(({code}) => write('dist/vue-form.common.js', code, bundle))
+)
 .catch(logError);
 
+function read(path) {
+  return fs.readFileSync(path, 'utf8');
+}
+
 function write(dest, code, bundle) {
-  return new Promise(function (resolve, reject) {
-    fs.writeFile(dest, code, function (err) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(dest, code, err => {
       if (err) return reject(err);
       console.log(blue(dest) + ' ' + getSize(code));
       resolve(bundle);
