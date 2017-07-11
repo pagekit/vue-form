@@ -120,7 +120,7 @@ export default function (Vue) {
                     return result;
                 }
 
-                return expr.call(this, data);
+                return expr.call(this, data, this);
             }
 
         },

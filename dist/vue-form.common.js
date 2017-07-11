@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.11
+ * vue-form v0.3.12
  * Released under the MIT License.
  */
 
@@ -334,7 +334,7 @@ var Fields = function (Vue) {
                     return result;
                 }
 
-                return expr.call(this, data);
+                return expr.call(this, data, this);
             }
 
         },
