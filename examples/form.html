@@ -16,19 +16,13 @@
             <h1>Form</h1>
 
             <div class="panel panel-default">
-
                 <div class="panel-heading"><h2 class="panel-title">Regular Fields</h2></div>
-
                 <fields class="panel-body" :config="fields" :values="values"></fields>
-
             </div>
 
             <div class="panel panel-default">
-
                 <div class="panel-heading"><h2 class="panel-title">Custom Fields</h2></div>
-
                 <custom-fields class="panel-body" :config="fields" :values="values"></custom-fields>
-
             </div>
 
             <pre>{{ values | json }}</pre>
@@ -76,11 +70,48 @@
                             label: 'Custom',
                             type: 'custom'
 
+                        },
+
+                        show: {
+                            type: 'checkbox',
+                            default: true
+                        },
+
+                        _show: {
+                            label: 'Show/Hide',
+                            type: 'text',
+                            show: 'show'
+                        },
+
+                        enable: {
+                            type: 'checkbox',
+                            default: true
+                        },
+
+                        _enable: {
+                            label: 'Enable/Disable',
+                            type: 'text',
+                            enable: function (values) {
+                                return values.enable;
+                            }
+                        },
+
+                        'nested.text': {
+                            label: 'Nested Text',
+                            type: 'text'
                         }
 
                     },
 
                     values: {}
+
+                },
+
+                filters: {
+
+                    json: function (val) {
+                        return JSON.stringify(val, null, 2);
+                    }
 
                 },
 

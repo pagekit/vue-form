@@ -2,11 +2,12 @@
  * Utility functions.
  */
 
-var debug = false, util = {};
+var debug = false, util = {}, _set;
 
 export const isArray = Array.isArray;
 
 export default function (Vue) {
+    _set = Vue.set;
     util = Vue.util;
     debug = Vue.config.debug || !Vue.config.silent;
 }
@@ -57,21 +58,45 @@ export function pull(arr, value) {
     arr.splice(arr.indexOf(value), 1);
 }
 
-export function get(obj, path, def) {
+export function get(obj, key, def) {
 
-    path = path.replace(/\[(\w+)\]/g, '.$1');
-    path = path.replace(/^\./, '').split('.');
+    var parts = key.split('.'), i;
 
-    for (var i = 0, len = path.length; i < len; i++) {
-
-        if (!isObject(obj)) {
+    for (i = 0; i < parts.length; i++) {
+        if (!isUndefined(obj[parts[i]])) {
+            obj = obj[parts[i]];
+        } else {
             return def;
         }
-
-        obj = obj[path[i]];
     }
 
-    return isUndefined(obj) ? def : obj;
+    return obj;
+}
+
+export function set(obj, key, val) {
+
+    var parts = key.split('.'), part;
+
+    while (parts.length > 1) {
+
+        part = parts.shift();
+
+        if (!isObject(obj[part]) || isArray(obj[part])) {
+            _set(obj, part, {});
+        }
+
+        obj = obj[part];
+    }
+
+    _set(obj, parts.shift(), val);
+}
+
+export function evaluate(expr, context) {
+    try {
+        return (Function(`with(this){return ${expr}}`)).call(context);
+    } catch (e) {
+        return false;
+    }
 }
 
 export function each(obj, iterator) {

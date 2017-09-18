@@ -9,6 +9,9 @@
     "mvvm"
   ],
   "license": "MIT",
+  "scripts": {
+    "build": "node ./build.js"
+  },
   "devDependencies": {
     "buble": "^0.15.2",
     "buble-loader": "^0.4.1",
