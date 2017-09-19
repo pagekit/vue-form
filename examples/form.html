@@ -117,7 +117,7 @@
                 methods: {
 
                     update: function (field, value, prev) {
-                        this.updated = '@update >> ' + field.name + ': ' + value;
+                        this.updated = '@update >> ' + field.name + ': ' + JSON.stringify(value);
                     }
 
                 },
