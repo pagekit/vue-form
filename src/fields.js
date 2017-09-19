@@ -56,21 +56,13 @@ export default function (Vue) {
 
         methods: {
 
-            getValue(name) {
-                return get(this.values, name);
-            },
-
-            setValue(name, value) {
-                set(this.values, name, value);
-            },
-
             getField(field) {
 
                 if (this.values instanceof Vue && 'getField' in this.values) {
                     return this.values.getField(field);
                 }
 
-                return this.getValue(field.name);
+                return get(this.values, field.name);
             },
 
             setField(field, value, prev) {
@@ -78,9 +70,10 @@ export default function (Vue) {
                 if (this.values instanceof Vue && 'setField' in this.values) {
                     this.values.setField(field, value, prev);
                 } else {
-                    this.setValue(field.name, value);
+                    set(this.values, field.name, value);
                 }
 
+                this.$emit('update', field, value, prev);
             },
 
             filterFields(config) {
