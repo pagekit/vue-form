@@ -12,14 +12,14 @@ var banner =
     " */\n";
 
 rollup.rollup({
-  entry: 'src/index.js',
+  input: 'src/index.js',
   plugins: [string({ include: 'src/**/*.html' }), buble()]
 })
 .then(bundle =>
   bundle.generate({
     format: 'umd',
     banner: banner,
-    moduleName: 'VueForm'
+    name: 'VueForm'
   }).then(({code}) => write('dist/vue-form.js', code, bundle))
 )
 .then(bundle =>
