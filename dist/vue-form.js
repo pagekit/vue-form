@@ -15,10 +15,12 @@
 
 var debug = false;
 var util = {};
+var _set;
 
 var isArray = Array.isArray;
 
 var Util = function (Vue) {
+    _set = Vue.set;
     util = Vue.util;
     debug = Vue.config.debug || !Vue.config.silent;
 };
@@ -69,7 +71,46 @@ function pull(arr, value) {
     arr.splice(arr.indexOf(value), 1);
 }
 
+function get(obj, key, def) {
 
+    var parts = key.split('.'), i;
+
+    for (i = 0; i < parts.length; i++) {
+        if (!isUndefined(obj[parts[i]])) {
+            obj = obj[parts[i]];
+        } else {
+            return def;
+        }
+    }
+
+    return obj;
+}
+
+function set(obj, key, val) {
+
+    var parts = key.split('.'), part;
+
+    while (parts.length > 1) {
+
+        part = parts.shift();
+
+        if (!isObject(obj[part]) || isArray(obj[part])) {
+            _set(obj, part, {});
+        }
+
+        obj = obj[part];
+    }
+
+    _set(obj, parts.shift(), val);
+}
+
+function evaluate(expr, context) {
+    try {
+        return (Function(("with(this){return " + expr + "}"))).call(context);
+    } catch (e) {
+        return false;
+    }
+}
 
 function each(obj, iterator) {
 
@@ -125,12 +166,6 @@ var Field = {
         }, this.field);
     },
 
-    created: function created() {
-
-        this.key = "[\"" + (this.name.replace(/\./g, '"]["')) + "\"]";
-
-    },
-
     computed: {
 
         attrs: {
@@ -165,7 +200,7 @@ var Field = {
                 return value;
             },
 
-            set: function set(value) {
+            set: function set$$1(value) {
 
                 if (!isUndefined(this.value) || value) {
                     this.$parent.setField(this, value, this.value);
@@ -226,9 +261,7 @@ var Fields = function (Vue) {
 
             config: {
                 type: [Array, Object],
-                default: function default$1() {
-                    return [];
-                }
+                default: function () { return []; }
             },
 
             values: {
@@ -274,13 +307,21 @@ var Fields = function (Vue) {
 
         methods: {
 
+            getValue: function getValue(name) {
+                return get(this.values, name);
+            },
+
+            setValue: function setValue(name, value) {
+                set(this.values, name, value);
+            },
+
             getField: function getField(field) {
 
                 if (this.values instanceof Vue && 'getField' in this.values) {
                     return this.values.getField(field);
                 }
 
-                return this.$get(("values" + (field.key)));
+                return this.getValue(field.name);
             },
 
             setField: function setField(field, value, prev) {
@@ -288,7 +329,7 @@ var Fields = function (Vue) {
                 if (this.values instanceof Vue && 'setField' in this.values) {
                     this.values.setField(field, value, prev);
                 } else {
-                    this.$set(("values" + (field.key)), value);
+                    this.setValue(field.name, value);
                 }
 
             },
@@ -324,14 +365,14 @@ var Fields = function (Vue) {
                 return fields;
             },
 
-            evaluate: function evaluate(expr, data) {
+            evaluate: function evaluate$1(expr, data) {
 
                 data = data || this.values;
 
                 if (isString(expr)) {
 
                     var comp = new Vue({data: data});
-                    var result = comp.$eval(expr);
+                    var result = evaluate(expr, comp);
 
                     comp.$destroy();
 
