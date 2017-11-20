@@ -1,5 +1,5 @@
 /*!
- * vue-form v0.3.12
+ * vue-form v0.3.13
  * Released under the MIT License.
  */
 
@@ -302,11 +302,11 @@ var Fields = function (Vue) {
                 each(config, function (field, name) {
 
                     if (!isString(field.name) && !arr) {
-                        field.name = name;
+                        field = assign({name: name}, field);
                     }
 
                     if (!isString(field.type)) {
-                        field.type = 'text';
+                        field = assign({type: 'text'}, field);
                     }
 
                     if (isString(field.name)) {
