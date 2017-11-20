@@ -84,11 +84,11 @@ export default function (Vue) {
                 each(config, (field, name) => {
 
                     if (!isString(field.name) && !arr) {
-                        field.name = name;
+                        field = assign({name}, field);
                     }
 
                     if (!isString(field.type)) {
-                        field.type = 'text';
+                        field = assign({type: 'text'}, field);
                     }
 
                     if (isString(field.name)) {
