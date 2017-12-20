@@ -1,6 +1,7 @@
 var fs = require('fs');
 var rollup = require('rollup');
 var uglify = require('uglify-js');
+var vue = require('rollup-plugin-vue');
 var buble = require('rollup-plugin-buble');
 var string = require('rollup-plugin-string');
 var package = require('./package.json');
@@ -13,7 +14,7 @@ var banner =
 
 rollup.rollup({
   input: 'src/index.js',
-  plugins: [string({ include: 'src/**/*.html' }), buble()]
+  plugins: [string({ include: 'src/**/*.html' }), buble(), vue()]
 })
 .then(bundle =>
   bundle.generate({
