@@ -38,7 +38,7 @@
 
         filters: {
 
-            json: function (val) {
+            json(val) {
                 return JSON.stringify(val, null, 2);
             }
 
@@ -100,9 +100,7 @@
                 _enable: {
                     label: 'Enable/Disable',
                     type: 'text',
-                    enable: function (values) {
-                        return values.enable;
-                    }
+                    enable: values => values.enable
                 },
 
                 'nested.text': {
