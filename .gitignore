@@ -1,3 +1,4 @@
 /node_modules
+/examples/*.min.js
 .DS_Store
 .idea
