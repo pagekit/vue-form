@@ -7,7 +7,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
-        <script src="../dist/vue-form.js"></script>
     </head>
     <body>
 
@@ -35,133 +34,7 @@
 
         </div>
 
-        <script>
-
-            new Vue({
-
-                el: '#app',
-
-                data: {
-
-                    fields: {
-
-                        text: {
-                            label: 'Text',
-                            type: 'text'
-                        },
-
-                        textarea: {
-                            label: 'Textarea',
-                            type: 'textarea'
-                        },
-
-                        select: {
-                            label: 'Select',
-                            type: 'select',
-                            default: 1,
-                            options: {
-                                one: 1,
-                                two: 2,
-                                three: 3
-                            }
-                        },
-
-                        number: {
-                            label: 'Number',
-                            type: 'number'
-                        },
-
-                        custom: {
-
-                            label: 'Custom',
-                            type: 'custom'
-
-                        },
-
-                        show: {
-                            type: 'checkbox',
-                            default: true
-                        },
-
-                        _show: {
-                            label: 'Show/Hide',
-                            type: 'text',
-                            show: 'show'
-                        },
-
-                        enable: {
-                            type: 'checkbox',
-                            default: true
-                        },
-
-                        _enable: {
-                            label: 'Enable/Disable',
-                            type: 'text',
-                            enable: function (values) {
-                                return values.enable;
-                            }
-                        },
-
-                        'nested.text': {
-                            label: 'Nested Text',
-                            type: 'text'
-                        }
-
-                    },
-
-                    values: {},
-                    updated: ''
-
-                },
-
-                methods: {
-
-                    update: function (field, value, prev) {
-                        this.updated = '@update >> ' + field.name + ': ' + JSON.stringify(value);
-                    }
-
-                },
-
-                filters: {
-
-                    json: function (val) {
-                        return JSON.stringify(val, null, 2);
-                    }
-
-                },
-
-                components: {
-
-                    customFields: {
-
-                        extends: Vue.component('fields'),
-
-                        template: `<div>
-                                        <div class="form-group" v-for="field in fields">
-                                            <label v-if="field.type != 'checkbox'">{{ field.label }}</label>
-                                            <component class="form-control" :is="field.type" :field="field"></component>
-                                        </div>
-                                    </div>`,
-
-                        fields: {
-
-                            number: '<input style="border: 1px solid red" type="number" v-bind="attrs" v-model="value">',
-
-                            custom: {
-
-                                template: '<input style="border: 1px solid red" type="text" v-bind="attrs" v-model="value">'
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            });
-
-        </script>
+        <script src="form.min.js"></script>
 
     </body>
 </html>
