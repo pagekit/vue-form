@@ -1,11 +1,12 @@
+/* eslint-env node */
+
 var fs = require('fs');
 var rollup = require('rollup');
 var uglify = require('uglify-js');
 var vue = require('rollup-plugin-vue');
 var buble = require('rollup-plugin-buble');
 var string = require('rollup-plugin-string');
-var package = require('./package.json');
-var version = process.env.VERSION || package.version;
+var {version} = require('./package.json');
 var banner =
     "/*!\n" +
     " * vue-form v" + version + "\n" +
